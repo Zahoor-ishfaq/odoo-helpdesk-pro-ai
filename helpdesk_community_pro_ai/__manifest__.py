@@ -12,7 +12,10 @@
     "website": "https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai",
     "license": "LGPL-3",
     "depends": ["helpdesk_community_pro"],
-    "data": [],
+    "data": [
+        "security/helpdesk_ai_security.xml",
+        "security/ir.model.access.csv",
+    ],
     "installable": True,
     "application": False,
 }

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_ai_log_manager,helpdesk.ai.log.manager,model_helpdesk_ai_log,helpdesk_community_pro.group_helpdesk_manager,1,0,0,0
+access_helpdesk_ai_log_system,helpdesk.ai.log.system,model_helpdesk_ai_log,base.group_system,1,1,1,1

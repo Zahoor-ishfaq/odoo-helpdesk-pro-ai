@@ -49,6 +49,16 @@ TRIAGE_USER_TEMPLATE = (
     '"confidence": 0.0-1.0}}'
 )
 
+MAX_SENTIMENT_CHARS = 300
+SENTIMENT_MAX_TOKENS = 10
+MAX_SENTIMENT_BATCH = 20
+ANGRY_ACTIVITY_SUMMARY = "Customer sentiment: Angry — review recommended"
+
+SENTIMENT_SYSTEM_PROMPT = (
+    "Classify the sentiment of this customer support message. Return "
+    "ONLY one word: calm, neutral, frustrated, or angry."
+)
+
 
 def _extract_json_block(text):
     """Best-effort {...} extraction for a response that wraps its JSON in
@@ -90,6 +100,17 @@ def _describe_unparseable_response(text):
     )
 
 
+def _parse_sentiment_response(text):
+    """One word expected -- calm/neutral/frustrated/angry (§7.2). Case and
+    stray punctuation are normalized; anything else defaults to neutral,
+    same as a missing/malformed response (a safe, conservative fallback,
+    not a bug to work around like triage's JSON parsing was)."""
+    word = (text or "").strip().strip(".").lower()
+    if word in dict(SENTIMENT_SELECTION):
+        return word
+    return "neutral"
+
+
 class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
     """Adds AI triage fields and the create()-time triage hook (§5.2, §7.1)."""
 
@@ -122,6 +143,11 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
         compute="_compute_ai_triage_needs_review",
         help="True when a low-confidence suggestion is awaiting Accept/Dismiss.",
     )
+    needs_sentiment_check = fields.Boolean(
+        default=False,
+        index=True,
+        help="Queued for a sentiment check by the periodic cron (§7.2).",
+    )
 
     @api.depends(
         "ai_triage_done",
@@ -147,6 +173,24 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
         for ticket in tickets:
             ticket._run_ai_triage()  # pylint: disable=protected-access
         return tickets
+
+    @api.model
+    def message_new(self, msg_dict, custom_values=None):
+        """Create a ticket from inbound email, then queue it for a
+        sentiment check if the team has AI enabled (§7.2)."""
+        ticket = super().message_new(msg_dict, custom_values=custom_values)
+        if ticket.team_id.ai_enabled:
+            ticket.needs_sentiment_check = True
+        return ticket
+
+    def message_update(self, msg_dict, update_vals=None):
+        """Thread an inbound reply, then queue a sentiment check for it
+        if the team has AI enabled (§7.2)."""
+        result = super().message_update(msg_dict, update_vals=update_vals)
+        for ticket in self:
+            if ticket.team_id.ai_enabled:
+                ticket.needs_sentiment_check = True
+        return result
 
     def action_accept_triage(self):
         """Apply the low-confidence suggestion the agent chose to accept."""
@@ -326,5 +370,119 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
                 "prompt_tokens": usage.get("prompt_tokens", 0),
                 "completion_tokens": usage.get("completion_tokens", 0),
                 "response_summary": summary,
+            }
+        )
+
+    @api.model
+    def _cron_process_sentiment_queue(self):
+        """Batch-process the sentiment queue (§7.2, §7.5): max 20 open
+        tickets per run, regardless of backlog size -- a closed ticket
+        doesn't need a sentiment check. The ai_enabled filter is defense
+        in depth alongside message_new/message_update only ever setting
+        the flag for AI-enabled teams in the first place."""
+        tickets = self.search(
+            [
+                ("needs_sentiment_check", "=", True),
+                ("stage_id.is_closed", "=", False),
+                ("team_id.ai_enabled", "=", True),
+            ],
+            limit=MAX_SENTIMENT_BATCH,
+        )
+        for ticket in tickets:
+            ticket._run_ai_sentiment_check()  # pylint: disable=protected-access
+
+    def _run_ai_sentiment_check(self):
+        """Score this ticket's latest inbound message, once (§7.2).
+
+        Any failure is caught and logged; needs_sentiment_check is always
+        cleared afterwards so a failing ticket can't wedge the queue --
+        it just gets no sentiment this cycle, matching §7.5's graceful
+        degradation ("helpdesk still works, just without AI").
+        """
+        self.ensure_one()
+        try:
+            self._perform_ai_sentiment_check()
+        except Exception:  # pylint: disable=broad-except
+            _logger.warning(
+                "AI sentiment check failed for ticket %s", self.id, exc_info=True
+            )
+        finally:
+            self.needs_sentiment_check = False
+
+    def _perform_ai_sentiment_check(self):
+        self.ensure_one()
+        message = self.env["mail.message"].search(
+            [
+                ("model", "=", "helpdesk.ticket"),
+                ("res_id", "=", self.id),
+                ("message_type", "=", "email"),
+            ],
+            order="date desc",
+            limit=1,
+        )
+        if not message:
+            return
+        plain_body = html2plaintext(message.body or "")[:MAX_SENTIMENT_CHARS]
+        if not plain_body.strip():
+            return
+
+        result = AnthropicClient(self.env).call(
+            system=SENTIMENT_SYSTEM_PROMPT,
+            user=plain_body,
+            max_tokens=SENTIMENT_MAX_TOKENS,
+            temperature=0,
+        )
+        if not result["ok"]:
+            _logger.warning(
+                "AI sentiment call failed for ticket %s: %s", self.id, result["error"]
+            )
+            return
+
+        sentiment = _parse_sentiment_response(result["text"])
+        self._log_sentiment_call(result, sentiment)
+        self._apply_sentiment(sentiment)
+
+    def _apply_sentiment(self, sentiment):
+        self.ensure_one()
+        self.write(
+            {"ai_sentiment": sentiment, "ai_sentiment_updated": fields.Datetime.now()}
+        )
+        if sentiment == "angry":
+            self._handle_angry_sentiment()
+
+    def _handle_angry_sentiment(self):
+        """Bump priority to Urgent and notify the team's manager(s) (§7.2).
+
+        member_ids is sudo()'d before the has_group() check: that method
+        raises AccessError when called on any user other than self.env.user
+        unless running as superuser -- looping over other users' groups
+        under the cron's own (unpredictable) execution user would be a
+        latent bug otherwise, not just an access-control nicety.
+        """
+        self.ensure_one()
+        if int(self.priority) < 3:
+            self.write({"priority": "3"})
+        managers = self.team_id.member_ids.sudo().filtered(
+            lambda u: u.has_group("helpdesk_community_pro.group_helpdesk_manager")
+        )
+        for manager in managers:
+            self.sudo().activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=ANGRY_ACTIVITY_SUMMARY,
+                user_id=manager.id,
+            )
+
+    def _log_sentiment_call(self, result, sentiment):
+        self.ensure_one()
+        usage = result.get("usage", {})
+        self.env["helpdesk.ai.log"].sudo().create(
+            {
+                "ticket_id": self.id,
+                "call_type": "sentiment",
+                "model_used": result.get("model"),
+                "prompt_tokens": usage.get("prompt_tokens", 0),
+                "completion_tokens": usage.get("completion_tokens", 0),
+                "sentiment_score": sentiment,
+                "response_summary": f"Detected sentiment: {sentiment}",
             }
         )

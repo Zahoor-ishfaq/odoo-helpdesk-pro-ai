@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This cron is immediately eligible to run once loaded (default
+     nextcall). See helpdesk_community_pro/data/helpdesk_cron.xml for why
+     CI runs with max-cron-threads set to 0. -->
+<odoo>
+    <record id="ir_cron_helpdesk_ai_sentiment_queue" model="ir.cron">
+        <field name="name">Helpdesk AI: Process Sentiment Queue</field>
+        <field name="model_id" ref="helpdesk_community_pro.model_helpdesk_ticket"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_process_sentiment_queue()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

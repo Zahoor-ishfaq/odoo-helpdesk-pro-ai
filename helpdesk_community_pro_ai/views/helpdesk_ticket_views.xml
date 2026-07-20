@@ -56,4 +56,58 @@
             </xpath>
         </field>
     </record>
+
+    <record id="helpdesk_ticket_view_form_inherit_ai_sentiment" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.helpdesk.ai.sentiment</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_community_pro.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="inside">
+                <div class="o_row" invisible="not ai_sentiment">
+                    <field
+                        name="ai_sentiment"
+                        widget="badge"
+                        decoration-success="ai_sentiment == 'calm'"
+                        decoration-warning="ai_sentiment == 'frustrated'"
+                        decoration-danger="ai_sentiment == 'angry'"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_kanban_inherit_ai" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kanban.inherit.helpdesk.ai</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_community_pro.helpdesk_ticket_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sla_status']" position="after">
+                <field name="ai_sentiment"/>
+            </xpath>
+            <xpath expr="//main" position="inside">
+                <div t-if="record.ai_sentiment.raw_value" class="mt-1">
+                    <span
+                        t-if="record.ai_sentiment.raw_value == 'calm'"
+                        class="badge text-bg-success"
+                        title="Sentiment: Calm"
+                    >Calm</span>
+                    <span
+                        t-elif="record.ai_sentiment.raw_value == 'frustrated'"
+                        class="badge text-bg-warning"
+                        title="Sentiment: Frustrated"
+                    >Frustrated</span>
+                    <span
+                        t-elif="record.ai_sentiment.raw_value == 'angry'"
+                        class="badge text-bg-danger"
+                        title="Sentiment: Angry"
+                    >Angry</span>
+                    <span
+                        t-elif="record.ai_sentiment.raw_value == 'neutral'"
+                        class="badge text-bg-secondary"
+                        title="Sentiment: Neutral"
+                    >Neutral</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
 </odoo>

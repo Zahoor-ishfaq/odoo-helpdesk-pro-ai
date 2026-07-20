@@ -15,6 +15,7 @@
     "data": [
         "security/helpdesk_ai_security.xml",
         "security/ir.model.access.csv",
+        "data/helpdesk_ai_cron.xml",
         "views/helpdesk_ai_settings_views.xml",
         "views/helpdesk_ai_log_views.xml",
         "views/helpdesk_team_views.xml",

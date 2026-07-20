@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherit_ai" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.helpdesk.ai</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_community_pro.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="ai_triage_needs_review" invisible="1"/>
+                <div
+                    class="alert alert-info d-flex justify-content-between align-items-center"
+                    role="alert"
+                    invisible="not ai_triage_needs_review"
+                    groups="helpdesk_community_pro.group_helpdesk_user"
+                >
+                    <div>
+                        <strong>AI suggested:</strong>
+                        Team
+                        <field
+                            name="ai_triage_team_suggestion"
+                            readonly="1"
+                            nolabel="1"
+                            class="oe_inline fw-bold"
+                        /> |
+                        Priority
+                        <field
+                            name="ai_triage_priority_suggestion"
+                            readonly="1"
+                            nolabel="1"
+                            class="oe_inline fw-bold"
+                        /> |
+                        Confidence
+                        <field
+                            name="ai_triage_confidence"
+                            readonly="1"
+                            nolabel="1"
+                            widget="percentage"
+                            class="oe_inline fw-bold"
+                        />
+                    </div>
+                    <div>
+                        <button
+                            name="action_accept_triage"
+                            type="object"
+                            string="Accept"
+                            class="btn-primary"
+                        />
+                        <button
+                            name="action_dismiss_triage"
+                            type="object"
+                            string="Dismiss"
+                            class="btn-secondary ms-2"
+                        />
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

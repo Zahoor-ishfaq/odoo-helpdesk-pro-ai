@@ -17,6 +17,7 @@
         "security/ir.model.access.csv",
         "views/helpdesk_ai_settings_views.xml",
         "views/helpdesk_team_views.xml",
+        "views/helpdesk_ticket_views.xml",
     ],
     "installable": True,
     "application": False,

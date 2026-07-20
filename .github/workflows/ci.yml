@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install pre-commit
+      - run: pre-commit run -a
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout helpdesk_community_pro (base module dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: Zahoor-ishfaq/odoo-helpdesk-pro
+          ref: "19.0"
+          path: helpdesk_community_pro_dep
+      - name: Install and test helpdesk_community_pro_ai
+        run: |
+          docker run --rm \
+            --network host \
+            --user root \
+            -e HOST=localhost -e PORT=5432 -e USER=odoo -e PASSWORD=odoo \
+            -v ${{ github.workspace }}/helpdesk_community_pro_ai:/mnt/extra-addons/helpdesk_community_pro_ai \
+            -v ${{ github.workspace }}/helpdesk_community_pro_dep/helpdesk_community_pro:/mnt/extra-addons/helpdesk_community_pro \
+            odoo:19.0 \
+            bash -c "
+              odoo -d ci_test -i helpdesk_community_pro,helpdesk_community_pro_ai --test-enable --test-tags /helpdesk_community_pro_ai --stop-after-init \
+                --max-cron-threads=0 \
+                --db_host=localhost --db_port=5432 --db_user=odoo --db_password=odoo
+            "

@@ -97,6 +97,7 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
 
     @api.model_create_multi
     def create(self, vals_list):
+        """Create tickets, then run AI triage on each (§7.1)."""
         tickets = super().create(vals_list)
         for ticket in tickets:
             ticket._run_ai_triage()  # pylint: disable=protected-access
@@ -211,9 +212,10 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
             return None
         if not isinstance(tags, list) or not all(isinstance(t, str) for t in tags):
             return None
-        if isinstance(confidence, bool) or not isinstance(confidence, (int, float)):
-            return None
-        if not 0.0 <= confidence <= 1.0:
+        confidence_is_number = not isinstance(confidence, bool) and isinstance(
+            confidence, (int, float)
+        )
+        if not confidence_is_number or not 0.0 <= confidence <= 1.0:
             return None
         return {
             "team": team,

@@ -123,7 +123,9 @@ class TestHelpdeskTicketTriage(TransactionCase):
     @patch(_CALL_API_TARGET)
     def test_too_short_content_skips_triage(self, mock_call_api):
         """Subject+body under 20 chars -> triage never attempted."""
-        ticket = self.env["helpdesk.ticket"].create({"name": "Hi", "team_id": self.team.id})
+        ticket = self.env["helpdesk.ticket"].create(
+            {"name": "Hi", "team_id": self.team.id}
+        )
 
         self.assertFalse(ticket.ai_triage_done)
         mock_call_api.assert_not_called()

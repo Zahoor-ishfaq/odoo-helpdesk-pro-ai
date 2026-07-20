@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="helpdesk_menu_ai_reporting"
+        name="Reporting"
+        parent="helpdesk_community_pro.helpdesk_menu_root"
+        groups="helpdesk_community_pro.group_helpdesk_manager"
+        sequence="90"
+    />
+
+    <menuitem
+        id="helpdesk_menu_ai_log"
+        name="AI Usage Log"
+        parent="helpdesk_menu_ai_reporting"
+        action="helpdesk_ai_log_action"
+        sequence="10"
+    />
+</odoo>

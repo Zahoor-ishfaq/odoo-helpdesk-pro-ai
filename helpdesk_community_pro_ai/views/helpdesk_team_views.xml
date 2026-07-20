@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_team_view_form_inherit_ai" model="ir.ui.view">
+        <field name="name">helpdesk.team.form.inherit.helpdesk.ai</field>
+        <field name="model">helpdesk.team</field>
+        <field name="inherit_id" ref="helpdesk_community_pro.helpdesk_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group
+                    string="AI Copilot"
+                    groups="helpdesk_community_pro.group_helpdesk_manager"
+                >
+                    <field name="ai_enabled"/>
+                    <field
+                        name="ai_auto_apply_threshold"
+                        invisible="not ai_enabled"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

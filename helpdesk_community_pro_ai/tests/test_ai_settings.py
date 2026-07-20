@@ -7,7 +7,11 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
-from ..services.anthropic_client import CONFIG_PARAM_KEY
+from ..services.anthropic_client import (
+    CONFIG_PARAM_KEY,
+    CONFIG_PARAM_MODEL,
+    DEFAULT_MODEL,
+)
 
 VALID_KEY = "sk-ant-" + "a" * 101  # 108 chars total, matches §7.4 format
 INVALID_KEY = "wrong-prefix-key"
@@ -51,6 +55,20 @@ class TestHelpdeskAiSettings(TransactionCase):
         self.env["ir.config_parameter"].sudo().set_param(CONFIG_PARAM_KEY, VALID_KEY)
         settings = self.env["res.config.settings"].create({})
         self.assertFalse(settings.get_values().get("anthropic_api_key"))
+
+    def test_model_selection_defaults_to_cheapest(self):
+        """Unset model defaults to Haiku, the cheapest option (§1)."""
+        settings = self.env["res.config.settings"].create({})
+        self.assertEqual(settings.anthropic_model, DEFAULT_MODEL)
+
+    def test_model_selection_is_stored(self):
+        """Choosing a model persists it to ir.config_parameter."""
+        settings = self.env["res.config.settings"].create(
+            {"anthropic_model": "claude-opus-4-6"}
+        )
+        settings.set_values()
+        stored = self.env["ir.config_parameter"].sudo().get_param(CONFIG_PARAM_MODEL)
+        self.assertEqual(stored, "claude-opus-4-6")
 
     def test_non_admin_cannot_set_key(self):
         """Non-admins can't even open Settings in this Odoo build (core ACL

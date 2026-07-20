@@ -23,7 +23,13 @@ API_KEY_PREFIX = "sk-ant-"
 API_KEY_LENGTH = 108
 REQUEST_TIMEOUT = 30
 CONFIG_PARAM_KEY = "helpdesk_ai.anthropic_key"
+CONFIG_PARAM_MODEL = "helpdesk_ai.model"
 DEFAULT_MODEL = "claude-haiku-4-5"
+MODEL_SELECTION = [
+    ("claude-haiku-4-5", "Claude Haiku 4.5 (default, cheapest)"),
+    ("claude-sonnet-4-6", "Claude Sonnet 4.6 (balanced)"),
+    ("claude-opus-4-6", "Claude Opus 4.6 (most capable)"),
+]
 
 
 def validate_api_key_format(key):
@@ -50,6 +56,13 @@ class AnthropicClient:  # pylint: disable=too-few-public-methods
         """
         key = self.env["ir.config_parameter"].sudo().get_param(CONFIG_PARAM_KEY)
         return key if validate_api_key_format(key) else None
+
+    def _get_configured_model(self):
+        """The admin-selected model (§1), falling back to the default."""
+        return (
+            self.env["ir.config_parameter"].sudo().get_param(CONFIG_PARAM_MODEL)
+            or DEFAULT_MODEL
+        )
 
     def _build_headers(self, api_key):
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
@@ -96,7 +109,7 @@ class AnthropicClient:  # pylint: disable=too-few-public-methods
         Never logs `system`/`user` content (§6, §8).
         """
         payload = {
-            "model": model or DEFAULT_MODEL,
+            "model": model or self._get_configured_model(),
             "max_tokens": max_tokens,
             "temperature": temperature,
             "system": system,

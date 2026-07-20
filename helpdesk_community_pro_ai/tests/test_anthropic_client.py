@@ -10,6 +10,8 @@ from odoo.tests.common import TransactionCase
 
 from ..services.anthropic_client import (
     CONFIG_PARAM_KEY,
+    CONFIG_PARAM_MODEL,
+    DEFAULT_MODEL,
     AnthropicClient,
     validate_api_key_format,
 )
@@ -69,3 +71,48 @@ class TestAnthropicClient(TransactionCase):
         mock_call_api.return_value = {"unexpected": "shape"}
         result = AnthropicClient(self.env).call(system="sys", user="hi", max_tokens=10)
         self.assertEqual(result, {"ok": False, "error": "unexpected_response_shape"})
+
+    @patch(_CALL_API_TARGET)
+    def test_call_falls_back_to_default_model_when_unset(self, mock_call_api):
+        """No admin-selected model -> the payload uses DEFAULT_MODEL."""
+        self.env["ir.config_parameter"].sudo().set_param(CONFIG_PARAM_KEY, VALID_KEY)
+        mock_call_api.return_value = {
+            "content": [{"text": "ok"}],
+            "usage": {"input_tokens": 1, "output_tokens": 1},
+        }
+        AnthropicClient(self.env).call(system="sys", user="hi", max_tokens=10)
+        sent_payload = mock_call_api.call_args[0][0]
+        self.assertEqual(sent_payload["model"], DEFAULT_MODEL)
+
+    @patch(_CALL_API_TARGET)
+    def test_call_uses_admin_configured_model(self, mock_call_api):
+        """The model chosen in AI settings (§1) is used when the caller
+        doesn't pass an explicit one."""
+        self.env["ir.config_parameter"].sudo().set_param(CONFIG_PARAM_KEY, VALID_KEY)
+        self.env["ir.config_parameter"].sudo().set_param(
+            CONFIG_PARAM_MODEL, "claude-sonnet-4-6"
+        )
+        mock_call_api.return_value = {
+            "content": [{"text": "ok"}],
+            "usage": {"input_tokens": 1, "output_tokens": 1},
+        }
+        AnthropicClient(self.env).call(system="sys", user="hi", max_tokens=10)
+        sent_payload = mock_call_api.call_args[0][0]
+        self.assertEqual(sent_payload["model"], "claude-sonnet-4-6")
+
+    @patch(_CALL_API_TARGET)
+    def test_call_explicit_model_overrides_configured_model(self, mock_call_api):
+        """An explicit model= argument wins over the admin-configured one."""
+        self.env["ir.config_parameter"].sudo().set_param(CONFIG_PARAM_KEY, VALID_KEY)
+        self.env["ir.config_parameter"].sudo().set_param(
+            CONFIG_PARAM_MODEL, "claude-sonnet-4-6"
+        )
+        mock_call_api.return_value = {
+            "content": [{"text": "ok"}],
+            "usage": {"input_tokens": 1, "output_tokens": 1},
+        }
+        AnthropicClient(self.env).call(
+            system="sys", user="hi", max_tokens=10, model="claude-opus-4-6"
+        )
+        sent_payload = mock_call_api.call_args[0][0]
+        self.assertEqual(sent_payload["model"], "claude-opus-4-6")

@@ -5,7 +5,13 @@
 from odoo import _, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
-from ..services.anthropic_client import CONFIG_PARAM_KEY, validate_api_key_format
+from ..services.anthropic_client import (
+    CONFIG_PARAM_KEY,
+    CONFIG_PARAM_MODEL,
+    DEFAULT_MODEL,
+    MODEL_SELECTION,
+    validate_api_key_format,
+)
 
 
 class ResConfigSettings(
@@ -31,6 +37,13 @@ class ResConfigSettings(
         string="API Key Configured",
         compute="_compute_anthropic_api_key_configured",
         help="Whether an Anthropic API key is currently stored.",
+    )
+    anthropic_model = fields.Selection(
+        MODEL_SELECTION,
+        string="AI Model",
+        default=DEFAULT_MODEL,
+        config_parameter=CONFIG_PARAM_MODEL,
+        help="Model used for triage, sentiment detection and reply drafting.",
     )
 
     def _compute_anthropic_api_key_configured(self):

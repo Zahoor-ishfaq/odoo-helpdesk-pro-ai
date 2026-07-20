@@ -36,6 +36,13 @@
                                 />
                             </div>
                         </setting>
+                        <setting
+                            id="anthropic_model_setting"
+                            string="AI Model"
+                            help="Model used for triage, sentiment detection and reply drafting."
+                        >
+                            <field name="anthropic_model"/>
+                        </setting>
                     </block>
                 </app>
             </xpath>

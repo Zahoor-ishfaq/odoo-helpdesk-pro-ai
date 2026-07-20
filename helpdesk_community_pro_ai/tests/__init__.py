@@ -1,3 +1,4 @@
 """Test package for helpdesk_community_pro_ai."""
 
 from . import test_ai_log  # noqa: F401
+from . import test_anthropic_client  # noqa: F401

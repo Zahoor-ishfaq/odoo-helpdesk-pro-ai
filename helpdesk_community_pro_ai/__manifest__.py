@@ -15,6 +15,7 @@
     "data": [
         "security/helpdesk_ai_security.xml",
         "security/ir.model.access.csv",
+        "views/helpdesk_ai_settings_views.xml",
     ],
     "installable": True,
     "application": False,

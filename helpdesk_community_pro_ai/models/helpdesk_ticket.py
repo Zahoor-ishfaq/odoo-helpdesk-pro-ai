@@ -2,6 +2,7 @@
 
 import json
 import logging
+import re
 
 # pylint: disable=import-error
 # odoo is not installed in the isolated pylint-odoo pre-commit environment.
@@ -12,6 +13,8 @@ from ..services.anthropic_client import AnthropicClient
 from .helpdesk_ai_log import SENTIMENT_SELECTION
 
 _logger = logging.getLogger(__name__)
+
+_JSON_BLOCK_RE = re.compile(r"\{.*\}", re.DOTALL)
 
 MIN_TRIAGE_CONTENT_LENGTH = 20
 MAX_SUBJECT_CHARS = 200
@@ -31,7 +34,9 @@ PRIORITY_WORD_TO_KEY = {
 }
 
 TRIAGE_SYSTEM_PROMPT = (
-    "You are a helpdesk triage assistant. Return ONLY valid JSON, no explanation."
+    "You are a helpdesk triage assistant. Return ONLY valid JSON, no explanation. "
+    "You must return ONLY a raw JSON object. No markdown, no code blocks, no "
+    "explanation. Start your response with { and end with }."
 )
 
 TRIAGE_USER_TEMPLATE = (
@@ -43,6 +48,46 @@ TRIAGE_USER_TEMPLATE = (
     'Return: {{"team": "...", "priority": "...", "tags": [...], '
     '"confidence": 0.0-1.0}}'
 )
+
+
+def _extract_json_block(text):
+    """Best-effort {...} extraction for a response that wraps its JSON in
+    markdown fences or explanatory prose despite being told not to (a real
+    Claude behavior seen in production, not just a hypothetical)."""
+    match = _JSON_BLOCK_RE.search(text or "")
+    return match.group(0) if match else None
+
+
+def _safe_json_loads(text):
+    try:
+        return json.loads(text)
+    except (TypeError, ValueError):
+        return None
+
+
+def _describe_unparseable_response(text):
+    """A structural, content-free description of why triage parsing
+    failed, safe to persist in helpdesk.ai.log.response_summary.
+
+    Deliberately never includes the response text itself, truncated or
+    otherwise: §5.1/§8 forbid storing raw prompts or responses there even
+    in part, since prose Claude generates around the JSON can echo back
+    ticket content. Only the failure category and a length are safe.
+    """
+    text = text or ""
+    length = len(text)
+    block = _extract_json_block(text)
+    if block is None:
+        return f"No JSON object found in a {length}-char response."
+    if _safe_json_loads(block) is None:
+        return (
+            f"Found a {{...}} block in a {length}-char response, but it "
+            "was not valid JSON."
+        )
+    return (
+        f"Found valid JSON in a {length}-char response, but it did not "
+        "match the expected team/priority/tags/confidence schema."
+    )
 
 
 class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
@@ -196,12 +241,15 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def _parse_triage_response(text):
-        """Strictly parse and validate the triage JSON (§7.1, §8): only the
-        expected keys/types are accepted, everything else -> None."""
-        try:
-            data = json.loads(text)
-        except (TypeError, ValueError):
-            return None
+        """Strictly parse and validate the triage JSON (§7.1, §8): a
+        direct parse first, falling back to extracting a {...} block for
+        responses that wrap JSON in markdown fences or prose despite the
+        system prompt saying not to. Only the expected keys/types are
+        ever accepted -- everything else -> None."""
+        data = _safe_json_loads(text)
+        if not isinstance(data, dict):
+            extracted = _extract_json_block(text)
+            data = _safe_json_loads(extracted) if extracted else None
         if not isinstance(data, dict):
             return None
         team = data.get("team")
@@ -262,7 +310,7 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
     def _log_triage_call(self, result, suggestion):
         self.ensure_one()
         if suggestion is None:
-            summary = "Response did not match the expected triage JSON schema."
+            summary = _describe_unparseable_response(result.get("text", ""))
         else:
             summary = (
                 f"Suggested team={suggestion['team']!r}, "

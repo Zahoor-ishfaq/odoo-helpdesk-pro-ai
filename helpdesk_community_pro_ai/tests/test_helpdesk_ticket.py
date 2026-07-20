@@ -107,6 +107,74 @@ class TestHelpdeskTicketTriage(TransactionCase):
         self.assertEqual(len(log), 1, "the API call still succeeded and used tokens")
 
     @patch(_CALL_API_TARGET)
+    def test_json_wrapped_in_markdown_code_block_is_extracted(self, mock_call_api):
+        """JSON fenced in ```json ... ``` is still extracted and applied."""
+        mock_call_api.return_value = _api_response(
+            '```json\n{"team": "Technical Support", "priority": "urgent", '
+            '"tags": [], "confidence": 0.95}\n```'
+        )
+        ticket = self._create_ticket()
+
+        self.assertTrue(ticket.ai_triage_done)
+        self.assertTrue(ticket.ai_triage_accepted)
+        self.assertEqual(ticket.team_id, self.other_team)
+        self.assertEqual(ticket.priority, "3")
+
+    @patch(_CALL_API_TARGET)
+    def test_json_with_preamble_text_is_extracted(self, mock_call_api):
+        """JSON preceded by explanatory prose is still extracted and applied."""
+        mock_call_api.return_value = _api_response(
+            "Based on the ticket content, here is my classification:\n\n"
+            '{"team": "Technical Support", "priority": "urgent", '
+            '"tags": [], "confidence": 0.95}'
+        )
+        ticket = self._create_ticket()
+
+        self.assertTrue(ticket.ai_triage_done)
+        self.assertTrue(ticket.ai_triage_accepted)
+        self.assertEqual(ticket.team_id, self.other_team)
+        self.assertEqual(ticket.priority, "3")
+
+    @patch(_CALL_API_TARGET)
+    def test_malformed_json_block_is_skipped_gracefully(self, mock_call_api):
+        """A {...} block that still isn't valid JSON (trailing comma) is
+        gracefully skipped, not crashed on."""
+        mock_call_api.return_value = _api_response(
+            '{"team": "Technical Support", "priority": "urgent",}'
+        )
+        ticket = self._create_ticket()
+
+        self.assertTrue(ticket.ai_triage_done)
+        self.assertFalse(ticket.ai_triage_accepted)
+        log = self.env["helpdesk.ai.log"].sudo().search([("ticket_id", "=", ticket.id)])
+        self.assertIn("was not valid JSON", log.response_summary)
+
+    @patch(_CALL_API_TARGET)
+    def test_valid_json_wrong_schema_is_skipped_gracefully(self, mock_call_api):
+        """Valid JSON that doesn't match the expected schema is gracefully
+        skipped, not crashed on."""
+        mock_call_api.return_value = _api_response('{"foo": "bar"}')
+        ticket = self._create_ticket()
+
+        self.assertTrue(ticket.ai_triage_done)
+        self.assertFalse(ticket.ai_triage_accepted)
+        log = self.env["helpdesk.ai.log"].sudo().search([("ticket_id", "=", ticket.id)])
+        self.assertIn("did not match the expected", log.response_summary)
+
+    @patch(_CALL_API_TARGET)
+    def test_unparseable_response_summary_never_contains_raw_text(self, mock_call_api):
+        """response_summary must never store the raw response text, even
+        for a failed parse (§5.1, §8) -- only a structural description."""
+        raw_text = "I'm sorry, I can't classify this specific customer complaint."
+        mock_call_api.return_value = _api_response(raw_text)
+        ticket = self._create_ticket()
+
+        self.assertTrue(ticket.ai_triage_done)
+        log = self.env["helpdesk.ai.log"].sudo().search([("ticket_id", "=", ticket.id)])
+        self.assertNotIn(raw_text, log.response_summary)
+        self.assertIn("No JSON object found", log.response_summary)
+
+    @patch(_CALL_API_TARGET)
     def test_ai_triage_done_prevents_retriage(self, mock_call_api):
         """ai_triage_done=True blocks any further triage call (idempotency)."""
         mock_call_api.return_value = _api_response(

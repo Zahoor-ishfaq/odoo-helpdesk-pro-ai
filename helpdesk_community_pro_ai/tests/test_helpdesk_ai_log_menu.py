@@ -13,10 +13,12 @@ class TestHelpdeskAiLogMenu(TransactionCase):
     """AI Usage Log action/menu: correct target, correct place, manager-only."""
 
     def test_action_targets_ai_log_model(self):
+        """The action opens helpdesk.ai.log, not some other model."""
         action = self.env.ref("helpdesk_community_pro_ai.helpdesk_ai_log_action")
         self.assertEqual(action.res_model, "helpdesk.ai.log")
 
     def test_menu_is_under_reporting_under_helpdesk_root(self):
+        """Helpdesk > Reporting > AI Usage Log, wired to the right action."""
         menu = self.env.ref("helpdesk_community_pro_ai.helpdesk_menu_ai_log")
         action = self.env.ref("helpdesk_community_pro_ai.helpdesk_ai_log_action")
         reporting = self.env.ref("helpdesk_community_pro_ai.helpdesk_menu_ai_reporting")
@@ -27,11 +29,13 @@ class TestHelpdeskAiLogMenu(TransactionCase):
         self.assertEqual(reporting.parent_id, helpdesk_root)
 
     def test_reporting_menu_is_manager_only(self):
+        """Only group_helpdesk_manager is granted the Reporting menu (§8)."""
         reporting = self.env.ref("helpdesk_community_pro_ai.helpdesk_menu_ai_reporting")
         manager_group = self.env.ref("helpdesk_community_pro.group_helpdesk_manager")
         self.assertIn(manager_group, reporting.group_ids)
 
     def test_manager_can_see_the_menu(self):
+        """A real helpdesk manager can actually reach the menu (the bug)."""
         # base.group_user (Internal User) is required for any ir.ui.menu
         # access at all -- the Settings > Users UI always grants it
         # alongside a feature role like Helpdesk Manager, so a real manager
@@ -52,10 +56,12 @@ class TestHelpdeskAiLogMenu(TransactionCase):
             }
         )
         menu = self.env.ref("helpdesk_community_pro_ai.helpdesk_menu_ai_log")
+        # pylint: disable=protected-access
         visible = self.env["ir.ui.menu"].with_user(manager)._visible_menu_ids()
         self.assertIn(menu.id, visible)
 
     def test_agent_cannot_see_the_menu(self):
+        """A non-manager agent must not see the manager-only menu (§8)."""
         agent = self.env["res.users"].create(
             {
                 "name": "Menu Test Agent",
@@ -70,5 +76,6 @@ class TestHelpdeskAiLogMenu(TransactionCase):
             }
         )
         menu = self.env.ref("helpdesk_community_pro_ai.helpdesk_menu_ai_log")
+        # pylint: disable=protected-access
         visible = self.env["ir.ui.menu"].with_user(agent)._visible_menu_ids()
         self.assertNotIn(menu.id, visible)

@@ -137,9 +137,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
                     (4, cls.env.ref("base.group_user").id),
                     (
                         4,
-                        cls.env.ref(
-                            "helpdesk_community_pro.group_helpdesk_manager"
-                        ).id,
+                        cls.env.ref("helpdesk_community_pro.group_helpdesk_manager").id,
                     ),
                 ],
             }
@@ -181,6 +179,10 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         ticket.needs_sentiment_check = True
         return ticket
 
+    def _run_sentiment_cron(self):
+        # pylint: disable=protected-access
+        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+
     @patch(_CALL_API_TARGET)
     def test_angry_bumps_priority_and_notifies_manager(self, mock_call_api):
         """§9.5: angry -> priority bumped to Urgent, manager activity
@@ -188,7 +190,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         mock_call_api.return_value = _api_response("angry")
         ticket = self._create_flagged_ticket(priority="1")
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         self.assertEqual(ticket.ai_sentiment, "angry")
         self.assertTrue(ticket.ai_sentiment_updated)
@@ -202,9 +204,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         log = (
             self.env["helpdesk.ai.log"]
             .sudo()
-            .search(
-                [("ticket_id", "=", ticket.id), ("call_type", "=", "sentiment")]
-            )
+            .search([("ticket_id", "=", ticket.id), ("call_type", "=", "sentiment")])
         )
         self.assertEqual(log.call_type, "sentiment")
         self.assertEqual(log.sentiment_score, "angry")
@@ -215,7 +215,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         mock_call_api.return_value = _api_response("angry")
         ticket = self._create_flagged_ticket(priority="3")
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         self.assertEqual(ticket.priority, "3")
 
@@ -225,7 +225,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         mock_call_api.return_value = _api_response("calm")
         ticket = self._create_flagged_ticket(priority="1")
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         self.assertEqual(ticket.ai_sentiment, "calm")
         self.assertEqual(ticket.priority, "1")
@@ -237,7 +237,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         mock_call_api.return_value = _api_response("I'm not sure, maybe upset?")
         ticket = self._create_flagged_ticket()
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         self.assertEqual(ticket.ai_sentiment, "neutral")
         self.assertEqual(ticket.priority, "1")
@@ -251,7 +251,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         mock_call_api.return_value = _api_response("angry")
         ticket = self._create_flagged_ticket(team=self.other_team)
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         mock_call_api.assert_not_called()
         self.assertTrue(ticket.needs_sentiment_check, "left queued, not processed")
@@ -267,7 +267,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         ticket = self._create_flagged_ticket()
         ticket.stage_id = closed_stage
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         mock_call_api.assert_not_called()
         self.assertFalse(ticket.ai_sentiment)
@@ -279,7 +279,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         for _ in range(25):
             self._create_flagged_ticket()
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         self.assertEqual(mock_call_api.call_count, 20)
 
@@ -289,16 +289,14 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         mock_call_api.return_value = {"error": "timeout_or_network"}
         ticket = self._create_flagged_ticket()
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         self.assertFalse(ticket.needs_sentiment_check)
         self.assertFalse(ticket.ai_sentiment)
         log = (
             self.env["helpdesk.ai.log"]
             .sudo()
-            .search(
-                [("ticket_id", "=", ticket.id), ("call_type", "=", "sentiment")]
-            )
+            .search([("ticket_id", "=", ticket.id), ("call_type", "=", "sentiment")])
         )
         self.assertFalse(log)
 
@@ -311,7 +309,7 @@ class TestHelpdeskTicketSentimentCron(MailCommon):
         )
         ticket.needs_sentiment_check = True
 
-        self.env["helpdesk.ticket"]._cron_process_sentiment_queue()
+        self._run_sentiment_cron()
 
         mock_call_api.assert_not_called()
         self.assertFalse(ticket.needs_sentiment_check)

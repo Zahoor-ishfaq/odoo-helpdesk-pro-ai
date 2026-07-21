@@ -9,6 +9,7 @@ CALL_API_TARGET = (
 
 
 def api_response(text, prompt_tokens=100, completion_tokens=20):
+    """The typed dict shape AnthropicClient._call_api returns on success."""
     return {
         "content": [{"text": text}],
         "usage": {"input_tokens": prompt_tokens, "output_tokens": completion_tokens},

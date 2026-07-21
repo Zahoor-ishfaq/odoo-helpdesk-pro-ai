@@ -12,17 +12,8 @@ from odoo.exceptions import AccessError
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
-_CALL_API_TARGET = (
-    "odoo.addons.helpdesk_community_pro_ai.services.anthropic_client"
-    ".AnthropicClient._call_api"
-)
-
-
-def _api_response(text, prompt_tokens=100, completion_tokens=20):
-    return {
-        "content": [{"text": text}],
-        "usage": {"input_tokens": prompt_tokens, "output_tokens": completion_tokens},
-    }
+from .common import CALL_API_TARGET as _CALL_API_TARGET
+from .common import api_response as _api_response
 
 
 @tagged("post_install", "-at_install")
@@ -174,8 +165,10 @@ class TestHelpdeskAiReplyWizard(TransactionCase):
         )
         self._open_wizard(ticket)
 
-        log = self.env["helpdesk.ai.log"].sudo().search(
-            [("ticket_id", "=", ticket.id), ("call_type", "=", "reply_draft")]
+        log = (
+            self.env["helpdesk.ai.log"]
+            .sudo()
+            .search([("ticket_id", "=", ticket.id), ("call_type", "=", "reply_draft")])
         )
         self.assertEqual(len(log), 1)
         self.assertEqual(log.prompt_tokens, 80)
@@ -190,8 +183,10 @@ class TestHelpdeskAiReplyWizard(TransactionCase):
         mock_call_api.return_value = {"error": "timeout_or_network"}
         self._open_wizard(ticket)
 
-        log = self.env["helpdesk.ai.log"].sudo().search(
-            [("ticket_id", "=", ticket.id), ("call_type", "=", "reply_draft")]
+        log = (
+            self.env["helpdesk.ai.log"]
+            .sudo()
+            .search([("ticket_id", "=", ticket.id), ("call_type", "=", "reply_draft")])
         )
         self.assertFalse(log)
 
@@ -208,9 +203,7 @@ class TestHelpdeskAiReplyWizard(TransactionCase):
                     (4, self.env.ref("base.group_user").id),
                     (
                         4,
-                        self.env.ref(
-                            "helpdesk_community_pro.group_helpdesk_user"
-                        ).id,
+                        self.env.ref("helpdesk_community_pro.group_helpdesk_user").id,
                     ),
                 ],
             }

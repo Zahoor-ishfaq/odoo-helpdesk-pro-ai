@@ -5,6 +5,23 @@
         <field name="model">helpdesk.team</field>
         <field name="inherit_id" ref="helpdesk_community_pro.helpdesk_team_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button
+                    name="action_view_ai_log"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-magic"
+                    groups="helpdesk_community_pro.group_helpdesk_manager"
+                    invisible="not ai_enabled"
+                >
+                    <field
+                        name="ai_triage_accuracy"
+                        widget="statinfo"
+                        string="AI Accuracy"
+                        digits="[0, 0]"
+                    />
+                </button>
+            </xpath>
             <xpath expr="//sheet" position="inside">
                 <group
                     string="AI Copilot"

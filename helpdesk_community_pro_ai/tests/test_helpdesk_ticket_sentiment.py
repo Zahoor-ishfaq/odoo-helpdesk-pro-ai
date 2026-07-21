@@ -11,10 +11,8 @@ from unittest.mock import patch
 from odoo.addons.mail.tests.common import MailCommon
 from odoo.tests import tagged
 
-_CALL_API_TARGET = (
-    "odoo.addons.helpdesk_community_pro_ai.services.anthropic_client"
-    ".AnthropicClient._call_api"
-)
+from .common import CALL_API_TARGET as _CALL_API_TARGET
+from .common import api_response as _api_response
 
 EMAIL_TPL = """Return-Path: <whatever-2a840@postmaster.twitter.com>
 X-Original-To: {to}
@@ -37,13 +35,6 @@ This should create a helpdesk ticket.
 
 Thanks,
 A Customer"""
-
-
-def _api_response(text, prompt_tokens=50, completion_tokens=5):
-    return {
-        "content": [{"text": text}],
-        "usage": {"input_tokens": prompt_tokens, "output_tokens": completion_tokens},
-    }
 
 
 @tagged("post_install", "-at_install")

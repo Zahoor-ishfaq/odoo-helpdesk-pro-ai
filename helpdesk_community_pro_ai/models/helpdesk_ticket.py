@@ -381,7 +381,14 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
                 vals["tag_ids"] = [(6, 0, tag_matches.ids)]
         self.write(vals)
 
-        if not auto_apply:
+        if auto_apply:
+            # A high-confidence suggestion applied without asking is still
+            # an accepted one for accuracy-tracking purposes (§1 item 5) --
+            # without this, every auto-applied call would silently count
+            # as "not accepted" since was_accepted otherwise only ever
+            # gets set by the manual Accept/Dismiss buttons.
+            self._mark_triage_log_accepted(True)
+        else:
             tags_text = ", ".join(suggestion["tags"]) if suggestion["tags"] else "none"
             self.message_post(
                 body=_(

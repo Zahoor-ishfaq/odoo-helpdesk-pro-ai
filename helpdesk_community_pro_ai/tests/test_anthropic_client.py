@@ -15,12 +15,9 @@ from ..services.anthropic_client import (
     AnthropicClient,
     validate_api_key_format,
 )
+from .common import CALL_API_TARGET as _CALL_API_TARGET
 
 VALID_KEY = "sk-ant-" + "a" * 101  # 108 chars total, matches §7.4 format
-_CALL_API_TARGET = (
-    "odoo.addons.helpdesk_community_pro_ai.services.anthropic_client"
-    ".AnthropicClient._call_api"
-)
 
 
 @tagged("post_install", "-at_install")

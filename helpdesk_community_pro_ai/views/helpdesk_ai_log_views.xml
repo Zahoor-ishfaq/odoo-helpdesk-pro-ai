@@ -18,6 +18,30 @@
         </field>
     </record>
 
+    <record id="helpdesk_ai_log_view_pivot" model="ir.ui.view">
+        <field name="name">helpdesk.ai.log.pivot</field>
+        <field name="model">helpdesk.ai.log</field>
+        <field name="arch" type="xml">
+            <pivot string="AI Usage">
+                <field name="team_id" type="row"/>
+                <field name="call_type" type="col"/>
+                <field name="total_tokens" type="measure"/>
+                <field name="cost_estimate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="helpdesk_ai_log_view_graph" model="ir.ui.view">
+        <field name="name">helpdesk.ai.log.graph</field>
+        <field name="model">helpdesk.ai.log</field>
+        <field name="arch" type="xml">
+            <graph string="AI Usage" type="bar">
+                <field name="call_type"/>
+                <field name="total_tokens" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
     <record id="helpdesk_ai_log_view_search" model="ir.ui.view">
         <field name="name">helpdesk.ai.log.search</field>
         <field name="model">helpdesk.ai.log</field>
@@ -46,7 +70,7 @@
     <record id="helpdesk_ai_log_action" model="ir.actions.act_window">
         <field name="name">AI Usage Log</field>
         <field name="res_model">helpdesk.ai.log</field>
-        <field name="view_mode">list</field>
+        <field name="view_mode">list,pivot,graph</field>
         <field name="search_view_id" ref="helpdesk_ai_log_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

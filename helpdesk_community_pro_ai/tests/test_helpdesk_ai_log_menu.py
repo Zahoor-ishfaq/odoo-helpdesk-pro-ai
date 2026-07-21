@@ -17,6 +17,26 @@ class TestHelpdeskAiLogMenu(TransactionCase):
         action = self.env.ref("helpdesk_community_pro_ai.helpdesk_ai_log_action")
         self.assertEqual(action.res_model, "helpdesk.ai.log")
 
+    def test_action_offers_pivot_and_graph_views(self):
+        """The action's view_mode includes pivot/graph alongside list, so
+        users can switch between them (§1 item 6)."""
+        action = self.env.ref("helpdesk_community_pro_ai.helpdesk_ai_log_action")
+        self.assertEqual(action.view_mode, "list,pivot,graph")
+
+    def test_pivot_view_opens_without_error(self):
+        """The pivot view's arch is valid against the model."""
+        pivot_view = self.env.ref(
+            "helpdesk_community_pro_ai.helpdesk_ai_log_view_pivot"
+        )
+        self.env["helpdesk.ai.log"].get_view(view_id=pivot_view.id, view_type="pivot")
+
+    def test_graph_view_opens_without_error(self):
+        """The graph view's arch is valid against the model."""
+        graph_view = self.env.ref(
+            "helpdesk_community_pro_ai.helpdesk_ai_log_view_graph"
+        )
+        self.env["helpdesk.ai.log"].get_view(view_id=graph_view.id, view_type="graph")
+
     def test_menu_is_under_reporting_under_helpdesk_root(self):
         """Helpdesk > Reporting > AI Usage Log, wired to the right action."""
         menu = self.env.ref("helpdesk_community_pro_ai.helpdesk_menu_ai_log")

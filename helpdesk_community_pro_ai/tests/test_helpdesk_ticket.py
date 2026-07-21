@@ -11,17 +11,8 @@ from unittest.mock import patch
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
-_CALL_API_TARGET = (
-    "odoo.addons.helpdesk_community_pro_ai.services.anthropic_client"
-    ".AnthropicClient._call_api"
-)
-
-
-def _api_response(text, prompt_tokens=100, completion_tokens=20):
-    return {
-        "content": [{"text": text}],
-        "usage": {"input_tokens": prompt_tokens, "output_tokens": completion_tokens},
-    }
+from .common import CALL_API_TARGET as _CALL_API_TARGET
+from .common import api_response as _api_response
 
 
 @tagged("post_install", "-at_install")
@@ -73,6 +64,10 @@ class TestHelpdeskTicketTriage(TransactionCase):
         self.assertEqual(log.call_type, "triage")
         self.assertEqual(log.prompt_tokens, 100)
         self.assertEqual(log.completion_tokens, 20)
+        self.assertTrue(
+            log.was_accepted,
+            "an auto-applied suggestion counts as accepted for accuracy tracking",
+        )
 
     @patch(_CALL_API_TARGET)
     def test_low_confidence_posts_banner_without_applying(self, mock_call_api):

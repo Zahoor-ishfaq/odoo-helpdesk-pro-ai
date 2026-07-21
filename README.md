@@ -38,6 +38,63 @@ for a full walkthrough, and
 [api-setup.md](helpdesk_community_pro_ai/docs/api-setup.md) for how to
 get an Anthropic API key and set a spending limit.
 
+## Screenshots
+
+<table>
+<tr>
+<td width="50%">
+
+**Ticket kanban** — live sentiment badges and priority stars
+
+![Ticket kanban](helpdesk_community_pro_ai/static/description/screenshots/kanban_view.png)
+
+</td>
+<td width="50%">
+
+**Smart Triage** — Accept/Dismiss banner with a confidence score
+
+![Smart Triage banner](helpdesk_community_pro_ai/static/description/screenshots/triage_banner.png)
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**Reply Assistant** — a genuine Claude-drafted reply, ready to edit
+
+![Draft Reply wizard](helpdesk_community_pro_ai/static/description/screenshots/draft_reply.png)
+
+</td>
+<td width="50%">
+
+**Usage Dashboard** — pivot view by team and call type
+
+![AI Usage Log pivot view](helpdesk_community_pro_ai/static/description/screenshots/usage_log.png)
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**Usage Dashboard** — token usage by call type
+
+![AI Usage Log graph view](helpdesk_community_pro_ai/static/description/screenshots/usage_log_chart.png)
+
+</td>
+<td width="50%">
+
+**Team settings** — the AI Accuracy stat button
+
+![Team form with AI Accuracy button](helpdesk_community_pro_ai/static/description/screenshots/team_settings.png)
+
+</td>
+</tr>
+</table>
+
+The full interface also works right-to-left in Arabic:
+
+![Ticket form in Arabic](helpdesk_community_pro_ai/static/description/screenshots/arabic_view.png)
+
 ## Install
 
 1. Install [**Helpdesk Pro**](https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro)
@@ -73,6 +130,11 @@ Lint before committing:
 ```bash
 pre-commit run -a
 ```
+
+## Feedback
+
+Suggestions and bug reports are always welcome — please open a
+[GitHub issue](https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/issues).
 
 ## License
 

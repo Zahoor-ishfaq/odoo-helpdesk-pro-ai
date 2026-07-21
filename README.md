@@ -1,6 +1,6 @@
 # Helpdesk AI Copilot
 
-[![CI](https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/actions/workflows/ci.yml)
+[![CI](https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/actions/workflows/ci.yml/badge.svg?branch=19.0)](https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/actions/workflows/ci.yml)
 [![License: LGPL-3](https://img.shields.io/badge/license-LGPL--3-blue.svg)](LICENSE)
 [![Odoo](https://img.shields.io/badge/Odoo-19.0-714B67.svg)](https://www.odoo.com)
 [![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20AR-714B67.svg)](helpdesk_community_pro_ai/i18n/ar.po)

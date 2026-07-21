@@ -216,6 +216,26 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
                 ticket.needs_sentiment_check = True
         return result
 
+    def message_post(self, **kwargs):
+        """Queue a sentiment check for an inbound customer message posted
+        straight into the chatter (§7.2 scope extension, approved
+        2026-07-21): message_new/message_update only ever fire for
+        messages routed through the real mail gateway, so a portal
+        customer -- or anyone manually testing without inbound email --
+        typing directly into the chatter would never get queued. Excludes
+        an internal agent's own note/reply: author_id is compared against
+        env.user.partner_id, not env.user itself, since a res.partner is
+        never equal to a res.users record.
+        """
+        message = super().message_post(**kwargs)
+        if (
+            self.team_id.ai_enabled
+            and message.message_type in ("email", "comment")
+            and message.author_id != self.env.user.partner_id
+        ):
+            self.needs_sentiment_check = True
+        return message
+
     def action_accept_triage(self):
         """Apply the low-confidence suggestion the agent chose to accept."""
         self.ensure_one()

@@ -118,6 +118,82 @@ class TestHelpdeskTicketSentimentQueue(MailCommon):
         )
         self.assertTrue(ticket.needs_sentiment_check)
 
+    @patch(_CALL_API_TARGET)
+    def test_message_post_flags_inbound_comment_from_customer(self, mock_call_api):
+        """A customer message typed directly into the chatter -- not
+        routed through message_new/message_update -- still queues a
+        sentiment check (§7.2 scope extension, approved 2026-07-21)."""
+        mock_call_api.return_value = {"error": "missing_or_invalid_api_key"}
+        ticket = self.env["helpdesk.ticket"].create(
+            {"name": "Portal ticket", "team_id": self.team.id}
+        )
+        customer = self.env["res.partner"].create(
+            {"name": "Angry Customer", "email": "angry@example.com"}
+        )
+        ticket.needs_sentiment_check = False
+
+        ticket.message_post(
+            body="This is unacceptable!",
+            message_type="comment",
+            author_id=customer.id,
+        )
+        self.assertTrue(ticket.needs_sentiment_check)
+
+    @patch(_CALL_API_TARGET)
+    def test_message_post_does_not_flag_agents_own_message(self, mock_call_api):
+        """An agent's own reply/note, authored as the acting user, is not
+        mistaken for an inbound customer message."""
+        mock_call_api.return_value = {"error": "missing_or_invalid_api_key"}
+        ticket = self.env["helpdesk.ticket"].create(
+            {"name": "Agent note ticket", "team_id": self.team.id}
+        )
+        ticket.needs_sentiment_check = False
+
+        ticket.message_post(
+            body="Internal note",
+            message_type="comment",
+            author_id=self.env.user.partner_id.id,
+        )
+        self.assertFalse(ticket.needs_sentiment_check)
+
+    @patch(_CALL_API_TARGET)
+    def test_message_post_does_not_flag_non_ai_team(self, mock_call_api):
+        """The team-level ai_enabled gate applies to message_post too."""
+        mock_call_api.return_value = {"error": "missing_or_invalid_api_key"}
+        ticket = self.env["helpdesk.ticket"].create(
+            {"name": "Non-AI portal ticket", "team_id": self.other_team.id}
+        )
+        customer = self.env["res.partner"].create(
+            {"name": "Angry Customer", "email": "angry2@example.com"}
+        )
+
+        ticket.message_post(
+            body="This is unacceptable!",
+            message_type="comment",
+            author_id=customer.id,
+        )
+        self.assertFalse(ticket.needs_sentiment_check)
+
+    @patch(_CALL_API_TARGET)
+    def test_message_post_does_not_flag_notification_messages(self, mock_call_api):
+        """A system notification (e.g. ticket-created) is never mistaken
+        for an inbound customer message."""
+        mock_call_api.return_value = {"error": "missing_or_invalid_api_key"}
+        ticket = self.env["helpdesk.ticket"].create(
+            {"name": "Notification ticket", "team_id": self.team.id}
+        )
+        customer = self.env["res.partner"].create(
+            {"name": "Angry Customer", "email": "angry3@example.com"}
+        )
+        ticket.needs_sentiment_check = False
+
+        ticket.message_post(
+            body="System generated",
+            message_type="notification",
+            author_id=customer.id,
+        )
+        self.assertFalse(ticket.needs_sentiment_check)
+
 
 @tagged("post_install", "-at_install")
 class TestHelpdeskTicketSentimentCron(MailCommon):

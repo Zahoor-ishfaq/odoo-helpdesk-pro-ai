@@ -1,171 +1,177 @@
 # Helpdesk AI Copilot — User Guide
 
-Helpdesk AI Copilot adds Claude-powered Smart Triage, Sentiment
-Detection, and a Reply Assistant to Helpdesk Pro, plus a Usage
-Dashboard to track what it costs and how well it's working. This guide
-covers setup and day-to-day use for agents and managers.
+This guide explains what Helpdesk AI Copilot does and how to set it
+up, in plain language. You don't need any AI experience to use it.
 
-## Contents
+## Installation
 
-- [Concepts](#concepts)
-- [Setup](#setup)
-- [Smart Triage](#smart-triage)
-- [Sentiment Detection](#sentiment-detection)
-- [Reply Assistant](#reply-assistant)
-- [Usage Dashboard](#usage-dashboard)
-- [Permissions](#permissions)
-- [Data privacy](#data-privacy)
-- [FAQ](#faq)
+**Step 1: Install Helpdesk Pro first.**
+Helpdesk AI Copilot is an add-on for [Helpdesk Pro](https://apps.odoo.com/apps/modules/19.0/helpdesk_community_pro)
+(`helpdesk_community_pro`) — install that module first from the Apps
+list.
 
-## Concepts
+**Step 2: Install Helpdesk AI Copilot.**
+Once Helpdesk Pro is installed, find **Helpdesk AI Copilot**
+(`helpdesk_community_pro_ai`) in the Apps list and install it too.
 
-| Term | Meaning |
-|---|---|
-| **AI-enabled team** | A helpdesk team with AI features switched on (off by default — opt in per team). |
-| **Auto-apply threshold** | The confidence (0.0–1.0) above which a triage suggestion is applied automatically instead of shown as a banner for review. Default 0.85. |
-| **AI Usage Log** | One record per Anthropic API call — model, token counts, cost estimate, and a short non-sensitive summary. Never the raw prompt or response. |
+**Step 3: Add your API key.**
+Go to **Settings ▸ General Settings**, scroll to **Helpdesk AI**,
+paste your Anthropic API key into the **Anthropic API Key** field, and
+click **Save**. (Don't have a key yet? See
+[Getting an Anthropic API Key](#getting-an-anthropic-api-key) below.)
 
-## Setup
+**Step 4: Turn AI on for a team.**
+Go to **Helpdesk ▸ Teams**, open the team you want to use AI on,
+check **AI Enabled** under the **AI Copilot** section, set the
+**Ai Auto Apply Threshold** (see [what the threshold
+means](#what-the-threshold-means) below), and click **Save**.
 
-1. Install **Helpdesk Pro** first, then install **Helpdesk AI Copilot**
-   on top of it.
-2. Get an Anthropic API key — see [api-setup.md](api-setup.md) for the
-   full walkthrough, including how to set a spending limit.
-3. Go to **Settings ▸ General Settings ▸ Helpdesk AI** and paste the
-   key under **Anthropic API Key**. Only administrators can see or set
-   this field, and the key is never echoed back after saving.
-4. Pick an **AI Model** — Claude Haiku 4.5 is the default and cheapest;
-   Sonnet and Opus are also available for teams that want more
-   capability at a higher cost.
-5. Go to **Helpdesk ▸ Configuration ▸ Teams**, open a team, and check
-   **AI Enabled** under the **AI Copilot** section. Set the
-   **Ai Auto Apply Threshold** — lower it if you want more suggestions
-   auto-applied without review; raise it toward 1.0 if you'd rather
-   review everything yourself at first.
+That's it — the team's tickets now get Smart Triage and Sentiment
+Detection automatically, and agents can use the Draft Reply button.
 
-AI features are strictly opt-in per team. A team with **AI Enabled**
-unchecked never calls the API — Smart Triage, Sentiment Detection, and
-the Draft Reply button are all inactive for its tickets.
+## Features
 
-## Smart Triage
+### Smart Triage
 
-The moment a ticket is created (by email or manually) on an AI-enabled
-team, Claude reads the subject and description and suggests a
-**team**, **priority**, and **tags**, along with a confidence score.
+**What it does:** The moment a new ticket comes in, Claude reads the
+subject and description and suggests which team it belongs to, how
+urgent it is, and what tags fit — the same judgment call an
+experienced agent would make, just instant.
 
-- **High confidence** (at or above the team's threshold): applied
-  automatically. The ticket's team, priority, and tags update right
-  away, and `AI Accuracy` on the team counts this as accepted.
-- **Low confidence**: nothing changes automatically. Instead, a banner
-  appears on the ticket form — *"AI suggested: Team X | Priority Y |
-  Tags Z"* — with **Accept** and **Dismiss** buttons. Accepting applies
-  the suggestion (and counts toward accuracy); dismissing leaves the
-  ticket as-is.
+**What the agent sees:**
 
-A ticket is only ever triaged once — `ai_triage_done` is set
-regardless of outcome, so re-saving a ticket never re-triggers a call.
-Very short tickets (under 20 characters combined subject + body) skip
-triage entirely — there isn't enough content for a meaningful
-suggestion.
+- If Claude is confident in its suggestion, it's applied automatically
+  — the ticket's team, priority, and tags are already set when you
+  open it. Nothing to do.
+- If Claude is less sure, nothing changes yet. Instead you'll see a
+  blue banner on the ticket: *"AI suggested: Team X | Priority Y |
+  Confidence Z%"* with two buttons.
 
-## Sentiment Detection
+**How to accept or dismiss:** Click **Accept** to apply the suggestion
+as-is, or **Dismiss** to ignore it and leave the ticket untouched.
+Either way, the banner disappears and the ticket is never re-analyzed.
 
-Every genuine inbound email — a new ticket or a threaded reply routed
-through the mail gateway — queues a sentiment check. A cron runs every
-5 minutes and scores the message as **calm**, **neutral**,
-**frustrated**, or **angry**, shown as a colored badge on the ticket
-form and kanban card.
+#### What the threshold means
 
-If the customer sounds **angry**, two things happen automatically:
+The **Ai Auto Apply Threshold** is a number between 0 and 1 (shown as
+a percentage) that controls how sure Claude has to be before it
+applies a suggestion without asking. For example, a threshold of 0.70
+means: any suggestion Claude is at least 70% confident about gets
+applied automatically; anything less confident shows as a banner for
+you to review instead. Lower it if you trust the suggestions and want
+less manual review; raise it if you'd rather double-check more often.
 
-1. Priority is bumped to **Urgent** (never lowered — if it's already
-   Urgent, nothing changes).
-2. Every manager on the ticket's team gets an activity: *"Customer
-   sentiment: Angry — review recommended."*
+### Sentiment Detection
 
-A message typed directly into the chatter (not routed through email)
-also queues a check, as long as it isn't the agent's own note or
-reply — so a customer commenting from the portal is covered too, not
-just email.
+**What it does:** Every time a customer emails in or replies (or
+comments from the customer portal), Claude reads the message and
+gauges how the customer is feeling. This runs automatically — nothing
+for the agent to trigger.
 
-## Reply Assistant
+**What the badges mean:**
 
-On any ticket, click **Draft Reply** in the header. Claude reads:
+- 🟢 **Calm** — a normal, even-toned message.
+- ⚪ **Neutral** — no strong emotion either way.
+- 🟠 **Frustrated** — the customer is annoyed or losing patience.
+- 🔴 **Angry** — the customer is upset. This is the one that needs
+  attention.
 
-- The ticket's own recent conversation (last 3 messages).
-- Up to 5 already-resolved tickets on the same team with a similar
-  subject, as style/content reference (a lightweight form of RAG — no
-  vector database involved).
+**What happens when angry is detected:** The ticket's priority is
+automatically raised to **Urgent** (if it wasn't already), and every
+manager on that team gets a to-do notifying them: *"Customer
+sentiment: Angry — review recommended."* This way an upset customer
+never sits quietly in a busy queue.
 
-...and drafts a professional, empathetic reply under 150 words, shown
-in an editable text box. Edit it however you like, then click **Use
-This Reply** to stage it as an internal chatter note. **The AI never
-sends anything to the customer** — you still copy the text into your
-own reply and click Send yourself.
+### AI Reply Assistant
 
-Only agents on the ticket's own team can open the wizard for it, even
-if you belong to `group_helpdesk_user` generally.
+**What it does:** Instead of staring at a blank reply box, click
+**Draft Reply** on any ticket. Claude reads the ticket's recent
+messages plus a few similar tickets your team has already resolved,
+and writes a professional, empathetic first draft — usually in a few
+seconds.
 
-## Usage Dashboard
+**How to use the Draft Reply button:** Open a ticket, click **Draft
+Reply** in the header. A window opens showing the draft in an editable
+box.
 
-**Helpdesk ▸ Reporting ▸ AI Usage Log** lists every API call — list,
-pivot, or graph view. The pivot groups by team and call type, with
-total tokens, cost estimate, and count as measures; the graph shows
-total tokens by call type as a bar chart.
+**How to edit and send:** Change anything you like in the draft box,
+then click **Use This Reply** — this adds it to the ticket's internal
+notes so you can copy it into your actual reply. **The AI never emails
+the customer itself.** You always review the text, paste it into a
+real reply, and click Send yourself. If you don't like the draft at
+all, just click **Cancel** and write your own reply as normal.
 
-Each **Team** form also shows an **AI Accuracy** stat button —
-accepted triage calls (auto-applied or manually accepted) divided by
-all triage calls for that team. Clicking it opens the log filtered to
-that team.
+### Usage Dashboard
 
-Cost estimates are priced from Claude Haiku 4.5's published rate
-(prompt and completion tokens separately) and shown to 6 decimal
-places, since a single call typically costs a fraction of a cent — a
-2-decimal display would just show `0.00` for almost everything.
+**Where to find it:** Go to **Helpdesk ▸ Reporting ▸ AI Usage Log**.
 
-## Permissions
+**What the metrics mean:**
 
-- **User: Agent** (`group_helpdesk_user`) — sees triage banners, can
-  Accept/Dismiss, and can use the Draft Reply wizard for tickets on
-  their own team.
-- **Manager** (`group_helpdesk_manager`) — everything an agent can do,
-  plus the AI Usage Log and the AI Accuracy stat button.
-- **Administrator** (`base.group_system`) — the only role that can
-  read or write the Anthropic API key.
+- **Total Tokens** — a rough measure of how much text was sent to and
+  received from Claude for that call. More tokens = a bit more cost.
+- **Cost Estimate** — the estimated price of that call in US dollars.
+  Individual calls are tiny fractions of a cent, so this is shown with
+  extra decimal places so it doesn't just look like "$0.00".
+- **Call Type** — whether the call was a Triage suggestion, a
+  Sentiment check, or a Reply Draft.
 
-## Data privacy
+Switch between **List**, **Pivot**, and **Graph** using the icons in
+the top-right to see the same data as a table, a breakdown by team and
+call type, or a bar chart.
 
-- No customer email address or phone number is ever included in a
-  prompt.
-- Every field sent to Claude is truncated (subject, body, and chatter
-  messages all have hard character limits) — never a full ticket
-  history.
-- `helpdesk.ai.log` stores only token counts and a short, non-sensitive
-  summary — never the raw prompt or the raw response.
-- All traffic uses TLS with certificate validation on; there is no
-  option to disable it.
+**How to read the accuracy %:** Each team's form has an **AI
+Accuracy** button near the top. This is simply: *how many triage
+suggestions were accepted, out of all triage suggestions made* — for
+example, 75% means 3 out of every 4 suggestions were kept (whether
+automatically or by an agent clicking Accept). Click the button to see
+the underlying log entries for that team.
+
+## Getting an Anthropic API Key
+
+1. Go to [console.anthropic.com](https://console.anthropic.com) and
+   create an account (or sign in).
+2. Click **API Keys ▸ Create Key**, give it a name like
+   `odoo-helpdesk`, and copy the key — it starts with `sk-ant-` and is
+   shown only once.
+3. Paste that key into Odoo under **Settings ▸ General Settings ▸
+   Helpdesk AI ▸ Anthropic API Key** and click **Save**.
+
+**Expected costs:** Every call is small — a triage or sentiment check
+is a few hundred words at most. For a helpdesk handling **100
+tickets a day** using the default (Haiku) model, expect roughly
+**$3–10 per month**. You can check your own real numbers any time
+under **Helpdesk ▸ Reporting ▸ AI Usage Log**.
+
+**Setting a spending limit:** Before you start, it's a good idea to
+cap what you could possibly spend. In the Anthropic Console, go to
+**Settings ▸ Billing ▸ Usage limits** and set a **Monthly spend
+limit** — for the example above, $10–15/month leaves comfortable
+headroom. See [api-setup.md](api-setup.md) for more detail, including
+how to rotate a key safely.
 
 ## FAQ
 
-**A ticket isn't getting triaged — why?**
-Check that its team has **AI Enabled** checked, and that the combined
-subject + description is at least 20 characters. Also confirm a valid
-API key is configured — a missing or malformed key fails silently
-(the helpdesk still works, just without AI), logged as a warning in
-the server log.
+**Does the AI send emails automatically?**
+No. The AI only ever drafts suggestions and replies. A human agent
+always reviews and clicks Send — the AI never contacts a customer
+directly.
 
-**The sentiment badge never appears on a ticket I tested manually.**
-Sentiment only triggers on a genuine inbound message — a real email
-routed through the mail gateway, or a chatter comment/portal message
-from someone other than the acting agent. Typing a note into the
-chatter as yourself doesn't count; that's by design; see [Sentiment
-Detection](#sentiment-detection).
+**Is customer data sent to Anthropic?**
+Only what's needed for the task at hand — the ticket subject and body
+(cut off at 500 characters), and for replies, the last few chatter
+messages. Customer email addresses and phone numbers are never
+included. Nothing is sent unless a team has AI turned on.
 
-**Why did Draft Reply show an error instead of a draft?**
-The API call failed (missing/invalid key, timeout, or rate limit) —
-the wizard shows a friendly message and stays open so you can still
-write the reply by hand.
+**What if the API key runs out of credits?**
+Nothing breaks. AI features fail gracefully — triage, sentiment, and
+reply drafting simply stop working (a warning is written to the
+server log) while everything else in the helpdesk keeps working
+normally. Add credits or fix the key and AI resumes on the next
+ticket.
 
-**Can I use a different Claude model for different teams?**
-No — the model is a single global setting under **AI Model**, applied
-to every AI-enabled team's triage, sentiment, and reply-draft calls.
+**Which Anthropic models are supported?**
+Three: **Claude Haiku** (the default — fastest and cheapest), **Claude
+Sonnet** (a step up in quality, higher cost), and **Claude Opus** (the
+most capable, highest cost). Pick one under **Settings ▸ General
+Settings ▸ Helpdesk AI ▸ AI Model** — it applies to every AI-enabled
+team.

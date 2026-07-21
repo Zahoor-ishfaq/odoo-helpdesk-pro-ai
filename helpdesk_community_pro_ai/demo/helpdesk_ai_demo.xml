@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Demo data (§11 M6): two AI-enabled teams and eight tickets that
+     already show Smart Triage, Sentiment Detection, and the Reply
+     Assistant in action, so installing with demo data tells the
+     whole story immediately, without waiting for a real API key or
+     the sentiment cron to run. Saudi business context, matching the
+     other Helpdesk Pro modules' demo data. -->
+<odoo>
+    <record id="base.user_admin" model="res.users">
+        <field name="group_ids" eval="[(4, ref('helpdesk_community_pro.group_helpdesk_manager'))]"/>
+    </record>
+
+    <record id="demo_tag_account" model="helpdesk.tag">
+        <field name="name">Account</field>
+    </record>
+    <record id="demo_tag_billing" model="helpdesk.tag">
+        <field name="name">Billing</field>
+    </record>
+    <record id="demo_tag_api" model="helpdesk.tag">
+        <field name="name">API</field>
+    </record>
+    <record id="demo_tag_bug" model="helpdesk.tag">
+        <field name="name">Bug</field>
+    </record>
+
+    <record id="demo_ai_team_riyadh" model="helpdesk.team">
+        <field name="name">Riyadh Customer Care</field>
+        <field name="ai_enabled">True</field>
+        <field name="ai_auto_apply_threshold">0.85</field>
+        <field name="member_ids" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+    <record id="demo_ai_team_jeddah" model="helpdesk.team">
+        <field name="name">Jeddah Technical Support</field>
+        <field name="ai_enabled">True</field>
+        <field name="ai_auto_apply_threshold">0.85</field>
+        <field name="member_ids" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record id="demo_ai_partner_mohammed" model="res.partner">
+        <field name="name">Mohammed Al-Otaibi</field>
+        <field name="email">mohammed.otaibi@example.sa</field>
+        <field name="city">Riyadh</field>
+    </record>
+    <record id="demo_ai_partner_fatima" model="res.partner">
+        <field name="name">Fatima Al-Zahrani</field>
+        <field name="email">fatima.zahrani@example.sa</field>
+        <field name="city">Riyadh</field>
+    </record>
+    <record id="demo_ai_partner_khalid" model="res.partner">
+        <field name="name">Khalid Al-Harbi</field>
+        <field name="email">khalid.harbi@example.sa</field>
+        <field name="city">Riyadh</field>
+    </record>
+    <record id="demo_ai_partner_layla" model="res.partner">
+        <field name="name">Layla Al-Mutairi</field>
+        <field name="email">layla.mutairi@example.sa</field>
+        <field name="city">Riyadh</field>
+    </record>
+    <record id="demo_ai_partner_sarah" model="res.partner">
+        <field name="name">Sarah Al-Qahtani</field>
+        <field name="email">sarah.qahtani@example.sa</field>
+        <field name="city">Jeddah</field>
+    </record>
+    <record id="demo_ai_partner_abdullah" model="res.partner">
+        <field name="name">Abdullah Al-Rashid</field>
+        <field name="email">abdullah.rashid@example.sa</field>
+        <field name="city">Jeddah</field>
+    </record>
+    <record id="demo_ai_partner_noura" model="res.partner">
+        <field name="name">Noura Al-Dosari</field>
+        <field name="email">noura.dosari@example.sa</field>
+        <field name="city">Jeddah</field>
+    </record>
+    <record id="demo_ai_partner_faisal" model="res.partner">
+        <field name="name">Faisal Al-Ghamdi</field>
+        <field name="email">faisal.ghamdi@example.sa</field>
+        <field name="city">Jeddah</field>
+    </record>
+
+    <!-- 1. Riyadh Customer Care: high confidence, auto-applied, frustrated -->
+    <record id="demo_ai_ticket_login" model="helpdesk.ticket">
+        <field name="name">Cannot access my account after password reset</field>
+        <field name="team_id" ref="demo_ai_team_riyadh"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_new"/>
+        <field name="partner_id" ref="demo_ai_partner_mohammed"/>
+        <field name="partner_email">mohammed.otaibi@example.sa</field>
+        <field name="priority">2</field>
+        <field name="tag_ids" eval="[(6, 0, [ref('demo_tag_account')])]"/>
+        <field name="description" type="html">
+<p>I reset my password twice now and I still can't log in -- it keeps saying "invalid credentials". This is blocking my whole team.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">True</field>
+        <field name="ai_triage_team_suggestion">Riyadh Customer Care</field>
+        <field name="ai_triage_priority_suggestion">high</field>
+        <field name="ai_triage_confidence">0.93</field>
+        <field name="ai_sentiment">frustrated</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(hours=3)"/>
+    </record>
+
+    <!-- 2. Riyadh Customer Care: low confidence banner, angry, escalated -->
+    <record id="demo_ai_ticket_refund" model="helpdesk.ticket">
+        <field name="name">متى سيتم استرداد المبلغ المدفوع؟</field>
+        <field name="team_id" ref="demo_ai_team_riyadh"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_new"/>
+        <field name="partner_id" ref="demo_ai_partner_fatima"/>
+        <field name="partner_email">fatima.zahrani@example.sa</field>
+        <field name="priority">3</field>
+        <field name="description" type="html">
+<p>طلبت استرداد المبلغ منذ عشرة أيام ولم يصلني شيء حتى الآن. هذا غير مقبول إطلاقاً وأريد حلاً فورياً.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">False</field>
+        <field name="ai_triage_team_suggestion">Riyadh Customer Care</field>
+        <field name="ai_triage_priority_suggestion">urgent</field>
+        <field name="ai_triage_confidence">0.62</field>
+        <field name="ai_sentiment">angry</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(hours=1)"/>
+    </record>
+    <record id="demo_ai_activity_refund" model="mail.activity">
+        <field name="res_model_id" ref="helpdesk_community_pro.model_helpdesk_ticket"/>
+        <field name="res_id" ref="demo_ai_ticket_refund"/>
+        <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+        <field name="summary">Customer sentiment: Angry — review recommended</field>
+        <field name="user_id" ref="base.user_admin"/>
+    </record>
+
+    <!-- 3. Riyadh Customer Care: high confidence, auto-applied, calm,
+         reply draft already generated and staged in the chatter -->
+    <record id="demo_ai_ticket_billing" model="helpdesk.ticket">
+        <field name="name">Quick question about this month's invoice</field>
+        <field name="team_id" ref="demo_ai_team_riyadh"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_in_progress"/>
+        <field name="partner_id" ref="demo_ai_partner_khalid"/>
+        <field name="partner_email">khalid.harbi@example.sa</field>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="priority">1</field>
+        <field name="tag_ids" eval="[(6, 0, [ref('demo_tag_billing')])]"/>
+        <field name="description" type="html">
+<p>The total on this invoice looks a little higher than last month -- could you confirm what changed? No rush, just curious.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">True</field>
+        <field name="ai_triage_team_suggestion">Riyadh Customer Care</field>
+        <field name="ai_triage_priority_suggestion">normal</field>
+        <field name="ai_triage_confidence">0.91</field>
+        <field name="ai_sentiment">calm</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(days=1)"/>
+    </record>
+    <record id="demo_ai_note_billing" model="mail.message">
+        <field name="model">helpdesk.ticket</field>
+        <field name="res_id" ref="demo_ai_ticket_billing"/>
+        <field name="message_type">comment</field>
+        <field name="subtype_id" ref="mail.mt_note"/>
+        <field name="author_id" ref="base.partner_admin"/>
+        <field name="subject">AI drafted reply (copy into your response)</field>
+        <field name="body" type="html">
+<p>Hi Khalid, thanks for flagging this! The increase is from a prorated add-on charge that started mid-cycle last month -- it'll settle back to the usual amount from next month onward. Happy to walk through the full breakdown if that would help.</p>
+        </field>
+    </record>
+
+    <!-- 4. Jeddah Technical Support: high confidence, auto-applied, frustrated -->
+    <record id="demo_ai_ticket_api" model="helpdesk.ticket">
+        <field name="name">API integration returns 403 errors intermittently</field>
+        <field name="team_id" ref="demo_ai_team_jeddah"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_new"/>
+        <field name="partner_id" ref="demo_ai_partner_sarah"/>
+        <field name="partner_email">sarah.qahtani@example.sa</field>
+        <field name="priority">3</field>
+        <field name="tag_ids" eval="[(6, 0, [ref('demo_tag_api'), ref('demo_tag_bug')])]"/>
+        <field name="description" type="html">
+<p>Our integration works fine most of the time, but roughly 1 in 20 requests fails with a 403 for no obvious reason. We've checked our API key and scopes -- nothing looks wrong on our end.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">True</field>
+        <field name="ai_triage_team_suggestion">Jeddah Technical Support</field>
+        <field name="ai_triage_priority_suggestion">urgent</field>
+        <field name="ai_triage_confidence">0.95</field>
+        <field name="ai_sentiment">frustrated</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(hours=6)"/>
+    </record>
+
+    <!-- 5. Jeddah Technical Support: low confidence banner, calm -->
+    <record id="demo_ai_ticket_dark_mode" model="helpdesk.ticket">
+        <field name="name">Feature request: dark mode for the mobile app</field>
+        <field name="team_id" ref="demo_ai_team_jeddah"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_on_hold"/>
+        <field name="partner_id" ref="demo_ai_partner_abdullah"/>
+        <field name="partner_email">abdullah.rashid@example.sa</field>
+        <field name="priority">0</field>
+        <field name="description" type="html">
+<p>Not urgent at all, but a dark theme for the mobile app would be great for the night shift team.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">False</field>
+        <field name="ai_triage_team_suggestion">Jeddah Technical Support</field>
+        <field name="ai_triage_priority_suggestion">low</field>
+        <field name="ai_triage_confidence">0.55</field>
+        <field name="ai_sentiment">calm</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(days=2)"/>
+    </record>
+
+    <!-- 6. Jeddah Technical Support: high confidence, auto-applied, angry,
+         escalated, and a reply draft already generated -->
+    <record id="demo_ai_ticket_export_crash" model="helpdesk.ticket">
+        <field name="name">النظام يتوقف عن العمل بشكل متكرر أثناء التصدير</field>
+        <field name="team_id" ref="demo_ai_team_jeddah"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_new"/>
+        <field name="partner_id" ref="demo_ai_partner_noura"/>
+        <field name="partner_email">noura.dosari@example.sa</field>
+        <field name="priority">2</field>
+        <field name="tag_ids" eval="[(6, 0, [ref('demo_tag_bug')])]"/>
+        <field name="description" type="html">
+<p>كل مرة أحاول فيها تصدير تقرير كبير، يتوقف النظام عن الاستجابة تماماً ويجب علي إعادة تشغيله. حدث هذا خمس مرات هذا الأسبوع وأثر على عملنا بشكل كبير.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">True</field>
+        <field name="ai_triage_team_suggestion">Jeddah Technical Support</field>
+        <field name="ai_triage_priority_suggestion">high</field>
+        <field name="ai_triage_confidence">0.88</field>
+        <field name="ai_sentiment">angry</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(minutes=45)"/>
+    </record>
+    <record id="demo_ai_activity_export_crash" model="mail.activity">
+        <field name="res_model_id" ref="helpdesk_community_pro.model_helpdesk_ticket"/>
+        <field name="res_id" ref="demo_ai_ticket_export_crash"/>
+        <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+        <field name="summary">Customer sentiment: Angry — review recommended</field>
+        <field name="user_id" ref="base.user_admin"/>
+    </record>
+    <record id="demo_ai_note_export_crash" model="mail.message">
+        <field name="model">helpdesk.ticket</field>
+        <field name="res_id" ref="demo_ai_ticket_export_crash"/>
+        <field name="message_type">comment</field>
+        <field name="subtype_id" ref="mail.mt_note"/>
+        <field name="author_id" ref="base.partner_admin"/>
+        <field name="subject">AI drafted reply (copy into your response)</field>
+        <field name="body" type="html">
+<p>Hi Noura, I'm really sorry for the disruption this has caused this week. This has been escalated to our engineering team as urgent -- we've seen this pattern before with large exports and are actively investigating. I'll update you within the next few hours with a workaround in the meantime.</p>
+        </field>
+    </record>
+
+    <!-- 7. Jeddah Technical Support: low confidence banner, neutral -->
+    <record id="demo_ai_ticket_slow_report" model="helpdesk.ticket">
+        <field name="name">Report generation is very slow for large datasets</field>
+        <field name="team_id" ref="demo_ai_team_jeddah"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_in_progress"/>
+        <field name="partner_id" ref="demo_ai_partner_faisal"/>
+        <field name="partner_email">faisal.ghamdi@example.sa</field>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="priority">1</field>
+        <field name="description" type="html">
+<p>Generating a report over ~50,000 rows takes almost five minutes. Smaller reports are fine.</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">False</field>
+        <field name="ai_triage_team_suggestion">Jeddah Technical Support</field>
+        <field name="ai_triage_priority_suggestion">medium</field>
+        <field name="ai_triage_confidence">0.68</field>
+        <field name="ai_sentiment">neutral</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(days=1, hours=4)"/>
+    </record>
+
+    <!-- 8. Riyadh Customer Care: resolved, high confidence, calm; also
+         doubles as a "similar resolved ticket" example for the Reply
+         Assistant's RAG context on future billing tickets -->
+    <record id="demo_ai_ticket_billing_resolved" model="helpdesk.ticket">
+        <field name="name">Invoice question resolved, thank you</field>
+        <field name="team_id" ref="demo_ai_team_riyadh"/>
+        <field name="stage_id" ref="helpdesk_community_pro.stage_solved"/>
+        <field name="partner_id" ref="demo_ai_partner_layla"/>
+        <field name="partner_email">layla.mutairi@example.sa</field>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="priority">1</field>
+        <field name="tag_ids" eval="[(6, 0, [ref('demo_tag_billing')])]"/>
+        <field name="assign_date" eval="DateTime.now() - relativedelta(days=5)"/>
+        <field name="close_date" eval="DateTime.now() - relativedelta(days=4)"/>
+        <field name="description" type="html">
+<p>Turned out to be the same prorated add-on charge explained on a previous ticket -- thanks for the quick clarification!</p>
+        </field>
+        <field name="ai_triage_done">True</field>
+        <field name="ai_triage_accepted">True</field>
+        <field name="ai_triage_team_suggestion">Riyadh Customer Care</field>
+        <field name="ai_triage_priority_suggestion">normal</field>
+        <field name="ai_triage_confidence">0.97</field>
+        <field name="ai_sentiment">calm</field>
+        <field name="ai_sentiment_updated" eval="DateTime.now() - relativedelta(days=4)"/>
+    </record>
+
+    <!-- AI Usage Log: one triage + one sentiment entry per ticket above,
+         plus the two reply-draft calls, so the Usage Dashboard (§1 item
+         6) is populated from the moment demo data installs. -->
+    <record id="demo_ai_log_triage_1" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_login"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">142</field>
+        <field name="completion_tokens">28</field>
+        <field name="response_summary">Suggested team='Riyadh Customer Care', priority='high', confidence=0.93</field>
+        <field name="was_accepted">True</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=3, minutes=5)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_1" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_login"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">64</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: frustrated</field>
+        <field name="sentiment_score">frustrated</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=3)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_2" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_refund"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">158</field>
+        <field name="completion_tokens">31</field>
+        <field name="response_summary">Suggested team='Riyadh Customer Care', priority='urgent', confidence=0.62</field>
+        <field name="was_accepted">False</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=1, minutes=10)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_2" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_refund"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">71</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: angry</field>
+        <field name="sentiment_score">angry</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=1)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_3" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_billing"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">131</field>
+        <field name="completion_tokens">26</field>
+        <field name="response_summary">Suggested team='Riyadh Customer Care', priority='normal', confidence=0.91</field>
+        <field name="was_accepted">True</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=1, minutes=5)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_3" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_billing"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">58</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: calm</field>
+        <field name="sentiment_score">calm</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=1)"/>
+    </record>
+    <record id="demo_ai_log_reply_draft_1" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_billing"/>
+        <field name="call_type">reply_draft</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">210</field>
+        <field name="completion_tokens">54</field>
+        <field name="response_summary">Drafted a reply using 1 similar ticket(s) as reference.</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=20)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_4" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_api"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">167</field>
+        <field name="completion_tokens">33</field>
+        <field name="response_summary">Suggested team='Jeddah Technical Support', priority='urgent', confidence=0.95</field>
+        <field name="was_accepted">True</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=6, minutes=5)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_4" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_api"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">69</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: frustrated</field>
+        <field name="sentiment_score">frustrated</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(hours=6)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_5" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_dark_mode"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">119</field>
+        <field name="completion_tokens">24</field>
+        <field name="response_summary">Suggested team='Jeddah Technical Support', priority='low', confidence=0.55</field>
+        <field name="was_accepted">False</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=2, minutes=5)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_5" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_dark_mode"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">52</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: calm</field>
+        <field name="sentiment_score">calm</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=2)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_6" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_export_crash"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">173</field>
+        <field name="completion_tokens">35</field>
+        <field name="response_summary">Suggested team='Jeddah Technical Support', priority='high', confidence=0.88</field>
+        <field name="was_accepted">True</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(minutes=50)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_6" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_export_crash"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">77</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: angry</field>
+        <field name="sentiment_score">angry</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(minutes=45)"/>
+    </record>
+    <record id="demo_ai_log_reply_draft_2" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_export_crash"/>
+        <field name="call_type">reply_draft</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">245</field>
+        <field name="completion_tokens">61</field>
+        <field name="response_summary">Drafted a reply using 0 similar ticket(s) as reference.</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(minutes=40)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_7" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_slow_report"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">124</field>
+        <field name="completion_tokens">25</field>
+        <field name="response_summary">Suggested team='Jeddah Technical Support', priority='medium', confidence=0.68</field>
+        <field name="was_accepted">False</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=1, hours=4, minutes=5)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_7" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_slow_report"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">55</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: neutral</field>
+        <field name="sentiment_score">neutral</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=1, hours=4)"/>
+    </record>
+
+    <record id="demo_ai_log_triage_8" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_billing_resolved"/>
+        <field name="call_type">triage</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">129</field>
+        <field name="completion_tokens">26</field>
+        <field name="response_summary">Suggested team='Riyadh Customer Care', priority='normal', confidence=0.97</field>
+        <field name="was_accepted">True</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=5, minutes=5)"/>
+    </record>
+    <record id="demo_ai_log_sentiment_8" model="helpdesk.ai.log">
+        <field name="ticket_id" ref="demo_ai_ticket_billing_resolved"/>
+        <field name="call_type">sentiment</field>
+        <field name="model_used">claude-haiku-4-5</field>
+        <field name="prompt_tokens">61</field>
+        <field name="completion_tokens">3</field>
+        <field name="response_summary">Detected sentiment: calm</field>
+        <field name="sentiment_score">calm</field>
+        <field name="created_at" eval="DateTime.now() - relativedelta(days=4, hours=23)"/>
+    </record>
+</odoo>

@@ -23,6 +23,9 @@
         "views/helpdesk_ticket_views.xml",
         "views/helpdesk_menus.xml",
     ],
+    "demo": [
+        "demo/helpdesk_ai_demo.xml",
+    ],
     "installable": True,
     "application": False,
 }

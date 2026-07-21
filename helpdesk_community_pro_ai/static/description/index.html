@@ -1,0 +1,112 @@
+<!-- Odoo Apps Store description page. -->
+<section style="max-width: 900px; margin: 0 auto; font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2b2b2b; line-height: 1.55;">
+
+    <img src="banner.png" alt="Helpdesk AI Copilot" style="width: 100%; height: auto; border-radius: 12px; display: block; margin: 16px 0;"/>
+
+    <div style="text-align: center; padding: 16px 16px 24px;">
+        <h1 style="font-size: 32px; margin: 0 0 8px;">Enterprise AI for your Helpdesk &#8212; Free</h1>
+        <p style="font-size: 18px; color: #5B3D7A; margin: 0;">
+            Claude-powered triage, sentiment detection, and reply drafting for
+            Helpdesk Pro &#8212; bring your own Anthropic API key, no
+            Enterprise license, no reseller markup.
+        </p>
+    </div>
+
+    <div style="padding: 16px 0;">
+        <div style="padding: 20px 24px; border: 1px solid #e6e6e6; border-radius: 8px; margin-bottom: 16px;">
+            <h3 style="margin-top: 0;">&#127919; Smart Triage</h3>
+            <p style="margin-bottom: 0;">The moment a ticket is created, Claude reads the subject
+            and description and suggests a team, priority, and tags.
+            High-confidence suggestions apply automatically; anything
+            less certain shows as a banner with one-click Accept or
+            Dismiss &#8212; the agent stays in control either way.</p>
+        </div>
+        <div style="padding: 20px 24px; border: 1px solid #e6e6e6; border-radius: 8px; margin-bottom: 16px;">
+            <h3 style="margin-top: 0;">&#128155; Sentiment Detection</h3>
+            <p style="margin-bottom: 0;">Every genuine inbound message &#8212; email or portal &#8212;
+            is scored calm, neutral, frustrated, or angry, shown as a
+            live badge on the ticket. An angry customer automatically
+            bumps the ticket to Urgent priority and notifies the
+            team's managers, so nothing frustrated slips through a
+            busy queue.</p>
+        </div>
+        <div style="padding: 20px 24px; border: 1px solid #e6e6e6; border-radius: 8px; margin-bottom: 16px;">
+            <h3 style="margin-top: 0;">&#9997;&#65039; Reply Assistant</h3>
+            <p style="margin-bottom: 0;">One click drafts a professional, empathetic reply from
+            the ticket's own conversation plus similar resolved
+            tickets as reference &#8212; a lightweight RAG, no vector
+            database required. The agent always reviews, edits, and
+            sends; the AI never contacts the customer directly.</p>
+        </div>
+        <div style="padding: 20px 24px; border: 1px solid #e6e6e6; border-radius: 8px; margin-bottom: 16px;">
+            <h3 style="margin-top: 0;">&#128202; Usage Analytics</h3>
+            <p style="margin-bottom: 0;">A pivot/graph AI Usage Log breaks down every call by
+            team and type &#8212; tokens, cost estimate, and count &#8212;
+            plus a per-team AI Accuracy stat button (accepted triage
+            suggestions out of all triage calls made).</p>
+        </div>
+    </div>
+
+    <div style="padding: 24px 0; border-top: 1px solid #e6e6e6; margin-top: 16px;">
+        <h2>Screenshots</h2>
+        <div>
+            <figure style="margin: 0 0 40px;">
+                <img src="screenshots/triage_banner_en.png" alt="Smart Triage banner on a ticket form" style="width: 100%; border: 1px solid #e6e6e6; border-radius: 8px; display: block;"/>
+                <figcaption style="font-size: 14px; color: #666; margin-top: 10px;">Smart Triage: a low-confidence suggestion shown as an Accept/Dismiss banner</figcaption>
+            </figure>
+            <figure style="margin: 0 0 40px;">
+                <img src="screenshots/sentiment_badge_en.png" alt="Sentiment badge on the ticket kanban" style="width: 100%; border: 1px solid #e6e6e6; border-radius: 8px; display: block;"/>
+                <figcaption style="font-size: 14px; color: #666; margin-top: 10px;">Live sentiment badges on the kanban board &#8212; calm, frustrated, or angry</figcaption>
+            </figure>
+            <figure style="margin: 0 0 40px;">
+                <img src="screenshots/reply_wizard_en.png" alt="Draft Reply wizard with an editable draft" style="width: 100%; border: 1px solid #e6e6e6; border-radius: 8px; display: block;"/>
+                <figcaption style="font-size: 14px; color: #666; margin-top: 10px;">Reply Assistant: an editable Claude-drafted reply, ready to review and send</figcaption>
+            </figure>
+            <figure style="margin: 0;">
+                <img src="screenshots/usage_dashboard_en.png" alt="AI Usage Log pivot view" style="width: 100%; border: 1px solid #e6e6e6; border-radius: 8px; display: block;"/>
+                <figcaption style="font-size: 14px; color: #666; margin-top: 10px;">Usage Dashboard: calls, tokens, and cost estimate by team and call type</figcaption>
+            </figure>
+        </div>
+        <p style="font-size: 13px; color: #666; margin-top: 12px;">The full UI is also available in Arabic &#8212; see the <a href="https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/blob/main/helpdesk_community_pro_ai/docs/user-guide-ar.md">Arabic user guide</a>.</p>
+    </div>
+
+    <div style="padding: 24px 0; border-top: 1px solid #e6e6e6; margin-top: 16px;">
+        <h2>Pricing</h2>
+        <p>This app is free. You bring your own
+        <a href="https://console.anthropic.com">Anthropic API key</a> and
+        pay Anthropic directly &#8212; no markup, no subscription to this
+        app itself. For a typical team doing <strong>100 tickets/day</strong>
+        (triage + sentiment on each, plus occasional reply drafts) on the
+        default Claude Haiku model, that works out to roughly
+        <strong>$3&#8211;10/month</strong>. See
+        <a href="https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/blob/main/helpdesk_community_pro_ai/docs/api-setup.md">api-setup.md</a>
+        for how to get a key and set a spending limit before you start.</p>
+    </div>
+
+    <div style="padding: 24px 0; border-top: 1px solid #e6e6e6; margin-top: 16px;">
+        <h2>Arabic support</h2>
+        <p>The full interface ships with an Arabic (<code>ar</code>)
+        translation alongside the English source strings &#8212; menus,
+        fields, buttons, and the sentiment/triage vocabulary. Demo data
+        installs with a Saudi business context so you can see the whole
+        module working, in either language, from the moment you install.</p>
+    </div>
+
+    <div style="padding: 24px 0; border-top: 1px solid #e6e6e6; margin-top: 16px;">
+        <h2>Requirements</h2>
+        <p>Requires <a href="https://apps.odoo.com/apps/modules/19.0/helpdesk_community_pro">Helpdesk Pro</a>
+        (<code>helpdesk_community_pro</code>) to be installed first, and an
+        <a href="https://console.anthropic.com">Anthropic API key</a> of your
+        own. No Enterprise features, no other paid dependencies.</p>
+    </div>
+
+    <div style="padding: 24px 0; border-top: 1px solid #e6e6e6;">
+        <h2>Support</h2>
+        <p>Questions and bug reports are welcome via the Store Q&amp;A
+        tab or as a
+        <a href="https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai/issues">GitHub issue</a>.
+        Source, tests, and CI are public:
+        <a href="https://github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai">github.com/Zahoor-ishfaq/odoo-helpdesk-pro-ai</a>.</p>
+    </div>
+
+</section>

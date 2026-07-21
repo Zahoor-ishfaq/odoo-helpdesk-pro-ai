@@ -1,0 +1,683 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* helpdesk_community_pro_ai
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-21 11:37+0000\n"
+"PO-Revision-Date: 2026-07-21 11:37+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/wizard/helpdesk_ai_reply.py:0
+msgid ""
+"%(msg_count)d prior message(s), %(similar_count)d similar resolved ticket(s)"
+" used as reference."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-check-circle text-success ms-2\" title=\"A key is currently stored\" invisible=\"not anthropic_api_key_configured\"/>\n"
+"                            <span class=\"text-muted ms-2\" invisible=\"anthropic_api_key_configured\">No key stored yet</span>"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_form_inherit_ai
+msgid ""
+"<strong>AI suggested:</strong>\n"
+"                        Team"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_team__ai_triage_accuracy
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_team_view_form_inherit_ai
+msgid "AI Accuracy"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_team_view_form_inherit_ai
+msgid "AI Copilot"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_reply_wizard_view_form
+msgid "AI Draft Reply"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_res_config_settings__anthropic_model
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid "AI Model"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model,name:helpdesk_community_pro_ai.model_helpdesk_ai_reply_wizard
+msgid "AI Reply Draft Wizard"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_graph
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_pivot
+msgid "AI Usage"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.actions.act_window,name:helpdesk_community_pro_ai.helpdesk_ai_log_action
+#: model:ir.ui.menu,name:helpdesk_community_pro_ai.helpdesk_menu_ai_log
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_list
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "AI Usage Log"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_reply_wizard_view_form
+msgid "AI draft will appear here..."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/wizard/helpdesk_ai_reply.py:0
+msgid "AI drafted reply (copy into your response)"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/wizard/helpdesk_ai_reply.py:0
+msgid ""
+"AI reply generation is currently unavailable. Please write your reply "
+"manually."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/models/helpdesk_ticket.py:0
+msgid ""
+"AI suggested: Team %(team)s | Priority %(priority)s | Tags %(tags)s — Accept"
+" or Dismiss"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:helpdesk.tag,name:helpdesk_community_pro_ai.demo_tag_api
+msgid "API"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_res_config_settings__anthropic_api_key_configured
+msgid "API Key Configured"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_form_inherit_ai
+msgid "Accept"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Accepted"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:helpdesk.tag,name:helpdesk_community_pro_ai.demo_tag_account
+msgid "Account"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_team__ai_auto_apply_threshold
+msgid "Ai Auto Apply Threshold"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_team__ai_enabled
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_enabled
+msgid "Ai Enabled"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_sentiment
+msgid "Ai Sentiment"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_sentiment_updated
+msgid "Ai Sentiment Updated"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_accepted
+msgid "Ai Triage Accepted"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_confidence
+msgid "Ai Triage Confidence"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_done
+msgid "Ai Triage Done"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_needs_review
+msgid "Ai Triage Needs Review"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_priority_suggestion
+msgid "Ai Triage Priority Suggestion"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_team_suggestion
+msgid "Ai Triage Team Suggestion"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__sentiment_score__angry
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ticket__ai_sentiment__angry
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Angry"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid "Anthropic API"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_res_config_settings__anthropic_api_key
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid "Anthropic API Key"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_log__model_used
+msgid "Anthropic model id, e.g. claude-haiku-4-5."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:helpdesk.tag,name:helpdesk_community_pro_ai.demo_tag_billing
+msgid "Billing"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:helpdesk.tag,name:helpdesk_community_pro_ai.demo_tag_bug
+msgid "Bug"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__call_type
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Call Type"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__sentiment_score__calm
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ticket__ai_sentiment__calm
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Calm"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_reply_wizard_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__res_config_settings__anthropic_model__claude-haiku-4-5
+msgid "Claude Haiku 4.5 (default, cheapest)"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__res_config_settings__anthropic_model__claude-opus-4-6
+msgid "Claude Opus 4.6 (most capable)"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__res_config_settings__anthropic_model__claude-sonnet-4-6
+msgid "Claude Sonnet 4.6 (balanced)"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_confidence
+msgid "Claude's confidence, 0.0-1.0."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__draft_reply
+msgid "Claude's draft -- edit freely before using it."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__company_id
+msgid "Company"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__completion_tokens
+msgid "Completion Tokens"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model,name:helpdesk_community_pro_ai.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__context_summary
+msgid "Context Summary"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__cost_estimate
+msgid "Cost Estimate"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__created_at
+msgid "Created At"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__create_uid
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__create_date
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_log__team_id
+msgid ""
+"Denormalized from the ticket for usage-dashboard reporting by team (§1 item "
+"6)."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_form_inherit_ai
+msgid "Dismiss"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Dismissed"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__display_name
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__display_name
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_team__display_name
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__display_name
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.actions.act_window,name:helpdesk_community_pro_ai.helpdesk_ai_reply_wizard_action
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__draft_reply
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_form_inherit_ai
+msgid "Draft Reply"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_team__ai_enabled
+msgid ""
+"Enable AI triage, sentiment detection and reply drafting for this team."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__error_message
+msgid "Error Message"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_log__cost_estimate
+msgid ""
+"Estimated cost in USD, informational only -- prompt/completion tokens priced"
+" separately at claude-haiku-4-5's published rate."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.actions.act_window,help:helpdesk_community_pro_ai.helpdesk_ai_log_action
+msgid ""
+"Every Smart Triage, Sentiment, or Reply Draft call Claude\n"
+"                makes is logged here — never the raw prompt or response,\n"
+"                only token counts and a short summary."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_log__was_accepted
+msgid "For triage calls: did the agent accept the AI suggestion?"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__sentiment_score__frustrated
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ticket__ai_sentiment__frustrated
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Frustrated"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__generation_failed
+msgid "Generation Failed"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid "Helpdesk AI"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model,name:helpdesk_community_pro_ai.model_helpdesk_ai_log
+msgid "Helpdesk AI Usage Log"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.actions.server,name:helpdesk_community_pro_ai.ir_cron_helpdesk_ai_sentiment_queue_ir_actions_server
+msgid "Helpdesk AI: Process Sentiment Queue"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model,name:helpdesk_community_pro_ai.model_helpdesk_team
+msgid "Helpdesk Team"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model,name:helpdesk_community_pro_ai.model_helpdesk_ticket
+msgid "Helpdesk Ticket"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__id
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__id
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_team__id
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__id
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/models/helpdesk_ai_settings.py:0
+msgid ""
+"Invalid Anthropic API key format: it must start with 'sk-ant-' and be "
+"exactly 108 characters long."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:helpdesk.team,name:helpdesk_community_pro_ai.demo_ai_team_jeddah
+msgid "Jeddah Technical Support"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__write_uid
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__write_date
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Model"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__model_used
+msgid "Model Used"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_res_config_settings__anthropic_model
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid "Model used for triage, sentiment detection and reply drafting."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ticket__needs_sentiment_check
+msgid "Needs Sentiment Check"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__sentiment_score__neutral
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ticket__ai_sentiment__neutral
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Neutral"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.actions.act_window,help:helpdesk_community_pro_ai.helpdesk_ai_log_action
+msgid "No AI calls logged yet"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_log__response_summary
+msgid "Non-sensitive summary only — never the raw prompt or response."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/models/helpdesk_ai_settings.py:0
+msgid "Only administrators can set the Anthropic API key."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_res_config_settings__anthropic_api_key
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid ""
+"Paste a new key to replace the stored one. Leave blank to keep the current "
+"key unchanged."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_team__ai_triage_accuracy
+msgid ""
+"Percentage of this team's triage calls that were accepted (manually, or via "
+"auto-apply) out of all triage calls made (§1 item 5)."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_priority_suggestion
+msgid "Priority word Claude suggested (display only)."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__prompt_tokens
+msgid "Prompt Tokens"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__needs_sentiment_check
+msgid "Queued for a sentiment check by the periodic cron (§7.2)."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__call_type__reply_draft
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Reply Draft"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.ui.menu,name:helpdesk_community_pro_ai.helpdesk_menu_ai_reporting
+msgid "Reporting"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__response_summary
+msgid "Response Summary"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_log__sentiment_score
+msgid "Result of a sentiment call."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_sentiment
+msgid "Result of the most recent sentiment check (§7.2)."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:helpdesk.team,name:helpdesk_community_pro_ai.demo_ai_team_riyadh
+msgid "Riyadh Customer Care"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__call_type__sentiment
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Sentiment"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__sentiment_score
+msgid "Sentiment Score"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Sentiment: Angry"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Sentiment: Calm"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Sentiment: Frustrated"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_kanban_inherit_ai
+msgid "Sentiment: Neutral"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__team_id
+msgid "Team"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_team_suggestion
+msgid "Team name Claude suggested (display only)."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__ticket_id
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__ticket_id
+msgid "Ticket"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_list
+msgid "Total Cost"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__total_tokens
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_list
+msgid "Total Tokens"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields.selection,name:helpdesk_community_pro_ai.selection__helpdesk_ai_log__call_type__triage
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_log_view_search
+msgid "Triage"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_team__ai_auto_apply_threshold
+msgid ""
+"Triage confidence (0.0-1.0) above which AI suggestions are applied "
+"automatically instead of shown for review."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_accepted
+msgid ""
+"True once the suggestion has been resolved -- auto-applied, or the agent "
+"clicked Accept or Dismiss."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_done
+msgid "True once triage has run for this ticket -- never re-triaged."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_triage_needs_review
+msgid "True when a low-confidence suggestion is awaiting Accept/Dismiss."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ai_reply_wizard_view_form
+msgid "Use This Reply"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,field_description:helpdesk_community_pro_ai.field_helpdesk_ai_log__was_accepted
+msgid "Was Accepted"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ai_reply_wizard__context_summary
+msgid "What context was used to build this draft."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_sentiment_updated
+msgid "When ai_sentiment was last computed."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_res_config_settings__anthropic_api_key_configured
+msgid "Whether an Anthropic API key is currently stored."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model:ir.model.fields,help:helpdesk_community_pro_ai.field_helpdesk_ticket__ai_enabled
+msgid "Whether this ticket's team has AI features enabled."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#. odoo-python
+#: code:addons/helpdesk_community_pro_ai/wizard/helpdesk_ai_reply.py:0
+msgid "You can only draft replies for tickets on your own team."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.res_config_settings_view_form
+msgid "sk-ant-..."
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_form_inherit_ai
+msgid ""
+"|\n"
+"                        Confidence"
+msgstr ""
+
+#. module: helpdesk_community_pro_ai
+#: model_terms:ir.ui.view,arch_db:helpdesk_community_pro_ai.helpdesk_ticket_view_form_inherit_ai
+msgid ""
+"|\n"
+"                        Priority"
+msgstr ""

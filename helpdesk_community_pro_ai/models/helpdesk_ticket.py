@@ -33,6 +33,30 @@ PRIORITY_WORD_TO_KEY = {
     "urgent": "3",
 }
 
+_PRIORITY_WORD_RE = {
+    word: re.compile(rf"\b{re.escape(word)}\b") for word in PRIORITY_WORD_TO_KEY
+}
+
+
+def _resolve_priority_key(text):
+    """Map an LLM priority word to a Selection key (§7.1).
+
+    _parse_triage_response only checks that "priority" is a string, not
+    that it's one of the four exact words the prompt asked for -- a real
+    Claude response wrapping it, e.g. "High Priority", would otherwise
+    silently fail to map via a strict dict lookup. Falls back to a
+    whole-word search for a known priority term anywhere in the string
+    before giving up.
+    """
+    normalized = (text or "").strip().lower()
+    if normalized in PRIORITY_WORD_TO_KEY:
+        return PRIORITY_WORD_TO_KEY[normalized]
+    for word, pattern in _PRIORITY_WORD_RE.items():
+        if pattern.search(normalized):
+            return PRIORITY_WORD_TO_KEY[word]
+    return None
+
+
 TRIAGE_SYSTEM_PROMPT = (
     "You are a helpdesk triage assistant. Return ONLY valid JSON, no explanation. "
     "You must return ONLY a raw JSON object. No markdown, no code blocks, no "
@@ -202,9 +226,7 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
             )
             if team:
                 vals["team_id"] = team.id
-        priority_key = PRIORITY_WORD_TO_KEY.get(
-            (self.ai_triage_priority_suggestion or "").strip().lower()
-        )
+        priority_key = _resolve_priority_key(self.ai_triage_priority_suggestion)
         if priority_key:
             vals["priority"] = priority_key
         self.write(vals)
@@ -319,7 +341,7 @@ class HelpdeskTicket(models.Model):  # pylint: disable=too-few-public-methods
     def _apply_triage_suggestion(self, suggestion, teams, tags):
         self.ensure_one()
         team_match = teams.filtered(lambda t: t.name == suggestion["team"])
-        priority_key = PRIORITY_WORD_TO_KEY.get(suggestion["priority"])
+        priority_key = _resolve_priority_key(suggestion["priority"])
         tag_matches = tags.filtered(lambda t: t.name in suggestion["tags"])
         threshold = self.team_id.ai_auto_apply_threshold
         auto_apply = suggestion["confidence"] >= threshold

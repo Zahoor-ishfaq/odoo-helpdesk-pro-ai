@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ai_reply_wizard_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ai.reply.wizard.form</field>
+        <field name="model">helpdesk.ai.reply.wizard</field>
+        <field name="arch" type="xml">
+            <form string="AI Draft Reply">
+                <field name="ticket_id" invisible="1"/>
+                <field name="generation_failed" invisible="1"/>
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    invisible="not generation_failed"
+                >
+                    <field name="error_message" readonly="1" nolabel="1"/>
+                </div>
+                <group>
+                    <field name="context_summary" readonly="1"/>
+                </group>
+                <field
+                    name="draft_reply"
+                    nolabel="1"
+                    placeholder="AI draft will appear here..."
+                />
+                <footer>
+                    <button
+                        string="Use This Reply"
+                        name="action_use_reply"
+                        type="object"
+                        class="btn-primary"
+                        invisible="generation_failed"
+                    />
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_ai_reply_wizard_action" model="ir.actions.act_window">
+        <field name="name">Draft Reply</field>
+        <field name="res_model">helpdesk.ai.reply.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

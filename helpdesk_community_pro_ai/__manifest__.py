@@ -19,6 +19,7 @@
         "views/helpdesk_ai_settings_views.xml",
         "views/helpdesk_ai_log_views.xml",
         "views/helpdesk_team_views.xml",
+        "wizard/helpdesk_ai_reply_views.xml",
         "views/helpdesk_ticket_views.xml",
         "views/helpdesk_menus.xml",
     ],

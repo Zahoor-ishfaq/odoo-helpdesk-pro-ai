@@ -5,6 +5,14 @@
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk_community_pro.helpdesk_ticket_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="%(helpdesk_ai_reply_wizard_action)d"
+                    type="action"
+                    string="Draft Reply"
+                    groups="helpdesk_community_pro.group_helpdesk_user"
+                />
+            </xpath>
             <xpath expr="//sheet" position="inside">
                 <field name="ai_triage_needs_review" invisible="1"/>
                 <div
